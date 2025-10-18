@@ -19,24 +19,24 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta name="description" content="👋 欢迎来到我的博客这是我使用 Hexo 搭建的第一篇文章。经过一番配置与调试，终于把这个博客跑起来了。虽然只是一个简单的开始，但这对我来说，是一个新的起点。  🧭 为什么要写博客主要有三个原因：  记录成长：每一次解决问题、完成项目、或者偶然的灵感，都值得被记录下来。写下来不仅能帮助自己复盘，也能帮助后来者少走弯路。  整理思路：当你尝试把知识写出来的时候，你会发现理解会更深。写博客其实就是">
+    <meta name="description" content="分布式ID生成本文以一个具体 Java 项目代码为例，解析其核心 ID 生成逻辑及设计亮点。旨在帮助开发者理解如何结合本地缓存和异步更新策略，实现高性能的分布式 ID 生成服务。  项目背景该服务提供 顺序ID 和 无序ID 两种生成方式，支持高并发场景下 ID 快速分配。主要思想是利用本地缓存减少数据库访问压力，通过异步刷新机制实现 ID 区间动态更新，保障 ID 生成的效率与唯一性。  数据库">
 <meta property="og:type" content="article">
-<meta property="og:title" content="我的第一篇博客">
-<meta property="og:url" content="http://example.com/2025/10/18/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87/index.html">
+<meta property="og:title" content="高效分布式ID生成服务代码解析">
+<meta property="og:url" content="http://example.com/2025/10/18/%E5%88%86%E5%B8%83%E5%BC%8FID%E7%94%9F%E6%88%90%E5%99%A8/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="👋 欢迎来到我的博客这是我使用 Hexo 搭建的第一篇文章。经过一番配置与调试，终于把这个博客跑起来了。虽然只是一个简单的开始，但这对我来说，是一个新的起点。  🧭 为什么要写博客主要有三个原因：  记录成长：每一次解决问题、完成项目、或者偶然的灵感，都值得被记录下来。写下来不仅能帮助自己复盘，也能帮助后来者少走弯路。  整理思路：当你尝试把知识写出来的时候，你会发现理解会更深。写博客其实就是">
+<meta property="og:description" content="分布式ID生成本文以一个具体 Java 项目代码为例，解析其核心 ID 生成逻辑及设计亮点。旨在帮助开发者理解如何结合本地缓存和异步更新策略，实现高性能的分布式 ID 生成服务。  项目背景该服务提供 顺序ID 和 无序ID 两种生成方式，支持高并发场景下 ID 快速分配。主要思想是利用本地缓存减少数据库访问压力，通过异步刷新机制实现 ID 区间动态更新，保障 ID 生成的效率与唯一性。  数据库">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2025-10-18T02:14:34.000Z">
-<meta property="article:modified_time" content="2025-10-18T03:07:03.763Z">
+<meta property="article:published_time" content="2025-10-18T04:40:00.000Z">
+<meta property="article:modified_time" content="2025-10-18T04:46:01.866Z">
 <meta property="article:author" content="John Doe">
-<meta property="article:tag" content="随笔">
-<meta property="article:tag" content="Hexo">
-<meta property="article:tag" content="新起点">
+<meta property="article:tag" content="分布式">
+<meta property="article:tag" content="ID生成">
+<meta property="article:tag" content="Java">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>我的第一篇博客 - Hexo</title>
+  <title>高效分布式ID生成服务代码解析 - Hexo</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -202,7 +202,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="我的第一篇博客"></span>
+            <span id="subtitle" data-typed-text="高效分布式ID生成服务代码解析"></span>
           
         </div>
 
@@ -213,8 +213,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2025-10-18 10:14" pubdate>
-          2025年10月18日 上午
+        <time datetime="2025-10-18 12:40" pubdate>
+          2025年10月18日 下午
         </time>
       </span>
     
@@ -225,7 +225,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          395 字
+          811 字
         
       </span>
     
@@ -236,7 +236,7 @@
         
         
         
-          4 分钟
+          7 分钟
         
       </span>
     
@@ -273,44 +273,63 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">我的第一篇博客</h1>
+            <h1 id="seo-header">高效分布式ID生成服务代码解析</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="👋-欢迎来到我的博客"><a href="#👋-欢迎来到我的博客" class="headerlink" title="👋 欢迎来到我的博客"></a>👋 欢迎来到我的博客</h1><p>这是我使用 <strong>Hexo</strong> 搭建的第一篇文章。<br>经过一番配置与调试，终于把这个博客跑起来了。<br>虽然只是一个简单的开始，但这对我来说，是一个新的起点。</p>
+                <h1 id="分布式ID生成"><a href="#分布式ID生成" class="headerlink" title="分布式ID生成"></a>分布式ID生成</h1><p>本文以一个具体 Java 项目代码为例，解析其核心 ID 生成逻辑及设计亮点。<br>旨在帮助开发者理解如何结合本地缓存和异步更新策略，实现高性能的分布式 ID 生成服务。</p>
 <hr>
-<h2 id="🧭-为什么要写博客"><a href="#🧭-为什么要写博客" class="headerlink" title="🧭 为什么要写博客"></a>🧭 为什么要写博客</h2><p>主要有三个原因：</p>
-<ol>
-<li><p><strong>记录成长</strong>：<br>每一次解决问题、完成项目、或者偶然的灵感，都值得被记录下来。<br>写下来不仅能帮助自己复盘，也能帮助后来者少走弯路。</p>
-</li>
-<li><p><strong>整理思路</strong>：<br>当你尝试把知识写出来的时候，你会发现理解会更深。<br>写博客其实就是一种最好的学习方式。</p>
-</li>
-<li><p><strong>分享价值</strong>：<br>我相信知识是可以分享的。<br>如果我的文章能让某个人少查一点资料，那就很值得。</p>
-</li>
-</ol>
+<h2 id="项目背景"><a href="#项目背景" class="headerlink" title="项目背景"></a>项目背景</h2><p>该服务提供 <strong>顺序ID</strong> 和 <strong>无序ID</strong> 两种生成方式，支持高并发场景下 ID 快速分配。<br>主要思想是利用本地缓存减少数据库访问压力，通过异步刷新机制实现 ID 区间动态更新，保障 ID 生成的效率与唯一性。</p>
 <hr>
-<h2 id="⚙️-我的技术方向"><a href="#⚙️-我的技术方向" class="headerlink" title="⚙️ 我的技术方向"></a>⚙️ 我的技术方向</h2><p>目前主要学习和使用的技术包括：</p>
+<h2 id="数据库表设计"><a href="#数据库表设计" class="headerlink" title="数据库表设计"></a>数据库表设计</h2><p>核心表 <code>t_id_generate_config</code> 用于存储各业务 ID 配置及号段信息：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE TABLE</span> `t_id_generate_config` (<br> `id` <span class="hljs-type">int</span> <span class="hljs-keyword">NOT NULL</span> AUTO_INCREMENT COMMENT <span class="hljs-string">&#x27;主键 id&#x27;</span>,<br> `remark` <span class="hljs-type">varchar</span>(<span class="hljs-number">255</span>) <span class="hljs-keyword">CHARACTER SET</span> utf8mb4 <span class="hljs-keyword">COLLATE</span> utf8mb4_unicode_ci <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">NULL</span> COMMENT <span class="hljs-string">&#x27;描述&#x27;</span>,<br> `next_threshold` <span class="hljs-type">bigint</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">NULL</span> COMMENT <span class="hljs-string">&#x27;当前 id 所在阶段的阈值&#x27;</span>,<br> `init_num` <span class="hljs-type">bigint</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">NULL</span> COMMENT <span class="hljs-string">&#x27;初始化值&#x27;</span>,<br> `current_start` <span class="hljs-type">bigint</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">NULL</span> COMMENT <span class="hljs-string">&#x27;当前 id 所在阶段的开始值&#x27;</span>,<br> `step` <span class="hljs-type">int</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">NULL</span> COMMENT <span class="hljs-string">&#x27;id 递增区间&#x27;</span>,<br> `is_seq` tinyint <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">NULL</span> COMMENT <span class="hljs-string">&#x27;是否有序（0 无序，1 有序）&#x27;</span>,<br> `id_prefix` <span class="hljs-type">varchar</span>(<span class="hljs-number">60</span>) <span class="hljs-keyword">CHARACTER SET</span> utf8mb4 <span class="hljs-keyword">COLLATE</span> utf8mb4_unicode_ci <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">NULL</span> COMMENT <span class="hljs-string">&#x27;业务前缀码，如果没有则返回时不携带&#x27;</span>,<br> `version` <span class="hljs-type">int</span> <span class="hljs-keyword">NOT NULL</span> <span class="hljs-keyword">DEFAULT</span> <span class="hljs-string">&#x27;0&#x27;</span> COMMENT <span class="hljs-string">&#x27;乐观锁版本号&#x27;</span>,<br> `create_time` datetime <span class="hljs-keyword">DEFAULT</span> <span class="hljs-built_in">CURRENT_TIMESTAMP</span> COMMENT <span class="hljs-string">&#x27;创建时间&#x27;</span>,<br> `update_time` datetime <span class="hljs-keyword">DEFAULT</span> <span class="hljs-built_in">CURRENT_TIMESTAMP</span> <span class="hljs-keyword">ON</span> <span class="hljs-keyword">UPDATE</span> <span class="hljs-built_in">CURRENT_TIMESTAMP</span> COMMENT <span class="hljs-string">&#x27;更新时间&#x27;</span>,<br> <span class="hljs-keyword">PRIMARY KEY</span> (`id`)<br>) ENGINE<span class="hljs-operator">=</span>InnoDB AUTO_INCREMENT<span class="hljs-operator">=</span><span class="hljs-number">8</span> <span class="hljs-keyword">DEFAULT</span> CHARSET<span class="hljs-operator">=</span>utf8mb4 <span class="hljs-keyword">COLLATE</span><span class="hljs-operator">=</span>utf8mb4_unicode_ci;<br></code></pre></td></tr></table></figure>
+
 <ul>
-<li>🖥️ 后端开发：<code>Spring Boot</code>、<code>Spring Cloud</code>  </li>
-<li>💾 数据库：<code>MySQL 8.0</code>  </li>
-<li>🌐 前端框架：<code>Vue</code>、<code>Uniapp</code>、<code>微信小程序</code>  </li>
-<li>🐳 部署：<code>Docker</code>、<code>Linux</code>  </li>
-<li>🤖 其他兴趣：AI 应用、直播系统开发、数据分析</li>
+<li>使用 <strong>自增主键</strong> 作为唯一标识。</li>
+<li><code>is_seq</code> 标记是否为顺序 ID。</li>
+<li><code>version</code> 用于乐观锁，防止多实例冲突。</li>
+<li><code>current_start</code> 和 <code>next_threshold</code> 定义号段范围。</li>
 </ul>
 <hr>
-<h2 id="🚀-未来计划"><a href="#🚀-未来计划" class="headerlink" title="🚀 未来计划"></a>🚀 未来计划</h2><p>这个博客会陆续更新以下内容：</p>
+<h2 id="核心代码剖析"><a href="#核心代码剖析" class="headerlink" title="核心代码剖析"></a>核心代码剖析</h2><h3 id="1️⃣-本地缓存结构"><a href="#1️⃣-本地缓存结构" class="headerlink" title="1️⃣ 本地缓存结构"></a>1️⃣ 本地缓存结构</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// 顺序ID缓存</span><br><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> Map&lt;Integer, LocalSeqIdBo&gt; localSeqIdBoMap = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ConcurrentHashMap</span>&lt;&gt;();<br><br><span class="hljs-comment">// 无序ID缓存</span><br><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> Map&lt;Integer, LocalUnSeqIdBo&gt; localUnSeqIdBoMap = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ConcurrentHashMap</span>&lt;&gt;();<br></code></pre></td></tr></table></figure>
+
 <ul>
-<li>项目实战笔记与技术总结  </li>
-<li>编程与学习方法分享  </li>
-<li>个人思考与生活记录</li>
+<li><strong>顺序ID缓存</strong>维护当前递增计数及区间阈值。</li>
+<li><strong>无序ID缓存</strong>维护一个打乱顺序的 ID 队列，既支持连续 ID 生成，又满足无序需求。</li>
 </ul>
-<p>希望能在这里不断成长，也期待遇见志同道合的朋友。</p>
 <hr>
-<h2 id="✨-写在最后"><a href="#✨-写在最后" class="headerlink" title="✨ 写在最后"></a>✨ 写在最后</h2><blockquote>
-<p>「记录让人成长，分享让世界变得更好。」</p>
+<h3 id="2️⃣-ID-生成逻辑"><a href="#2️⃣-ID-生成逻辑" class="headerlink" title="2️⃣ ID 生成逻辑"></a>2️⃣ ID 生成逻辑</h3><p><strong>顺序 ID</strong>生成通过调用 <code>incrementAndGet</code> 实现线程安全递增：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">long</span> <span class="hljs-variable">returnId</span> <span class="hljs-operator">=</span> localSeqIdBo.getCurrentNum().incrementAndGet();<br></code></pre></td></tr></table></figure>
+
+<p><strong>无序 ID</strong>生成通过从本地的 ID 队列中 <code>poll</code> 一个 ID：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">Long</span> <span class="hljs-variable">pollId</span> <span class="hljs-operator">=</span> localUnSeqIdBo.getIdQueue().poll();<br></code></pre></td></tr></table></figure>
+
+<p>两种方式满足不同应用场景的 ID 生成需求。</p>
+<hr>
+<h3 id="3️⃣-异步刷新机制"><a href="#3️⃣-异步刷新机制" class="headerlink" title="3️⃣ 异步刷新机制"></a>3️⃣ 异步刷新机制</h3><p>当缓存 ID 使用进度达到区间的 <strong>75%</strong> 时，代码采用 <strong>信号量 + 线程池</strong> 控制异步刷新 ID 区间，防止多线程并发更新数据库：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">if</span>(localSeqIdBo.getCurrentNum().get() - localSeqIdBo.getCurrentStart() &gt; step * UPDATE_RATE)&#123;<br>    <span class="hljs-type">Semaphore</span> <span class="hljs-variable">semaphore</span> <span class="hljs-operator">=</span> semaphoreMap.get(localSeqIdBo.getId());<br>    <span class="hljs-keyword">if</span>(semaphore.tryAcquire())&#123;<br>        threadPoolExecutor.execute(() -&gt; &#123;<br>            <span class="hljs-keyword">try</span> &#123;<br>                tryUpdateMysqlRecord(idGenerateMapper.selectById(localSeqIdBo.getId()));<br>            &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;<br>                LOGGER.error(<span class="hljs-string">&quot;同步失败&quot;</span>, e);<br>            &#125; <span class="hljs-keyword">finally</span> &#123;<br>                semaphoreMap.get(localSeqIdBo.getId()).release();<br>            &#125;<br>        &#125;);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>异步更新提升响应速度。</li>
+<li>信号量保证更新单一性，避免多线程冲突。</li>
+</ul>
+<hr>
+<h3 id="4️⃣-并发控制与线程池"><a href="#4️⃣-并发控制与线程池" class="headerlink" title="4️⃣ 并发控制与线程池"></a>4️⃣ 并发控制与线程池</h3><ul>
+<li>使用 <strong>Semaphore</strong> 确保数据库更新操作互斥访问。</li>
+<li>使用带自定义命名线程的 <strong>线程池</strong> 提升异步执行效率，保证高并发环境稳定安全。</li>
+</ul>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>该 ID 生成服务设计巧妙结合了：</p>
+<ul>
+<li>本地缓存</li>
+<li>高并发控制</li>
+<li>异步刷新机制</li>
+</ul>
+<p>极大降低数据库压力，实现了高性能的分布式 ID 生成。<br>适合单实例或有限多实例部署场景，代码结构清晰，易于扩展和维护。</p>
+<blockquote>
+<p>理解和借鉴其设计思路，有助于构建稳定高效的分布式系统基础组件。</p>
 </blockquote>
-<p>感谢你能看到这里。<br>如果你也在搭建自己的博客，可以留言交流，我们一起进步。  </p>
 <p>—— <em>NowPion</em></p>
 
                 
@@ -320,15 +339,36 @@
             <div>
               <div class="post-metas my-3">
   
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/" class="category-chain-item">技术分享</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
   
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E9%9A%8F%E7%AC%94/" class="print-no-link">#随笔</a>
+        <a href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/" class="print-no-link">#分布式</a>
       
-        <a href="/tags/Hexo/" class="print-no-link">#Hexo</a>
+        <a href="/tags/ID%E7%94%9F%E6%88%90/" class="print-no-link">#ID生成</a>
       
-        <a href="/tags/%E6%96%B0%E8%B5%B7%E7%82%B9/" class="print-no-link">#新起点</a>
+        <a href="/tags/Java/" class="print-no-link">#Java</a>
       
     </div>
   
@@ -340,8 +380,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>我的第一篇博客</div>
-      <div>http://example.com/2025/10/18/我的第一篇/</div>
+      <div>高效分布式ID生成服务代码解析</div>
+      <div>http://example.com/2025/10/18/分布式ID生成器/</div>
     </div>
     <div class="license-meta">
       
@@ -385,15 +425,15 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/10/18/%E5%88%86%E5%B8%83%E5%BC%8FID%E7%94%9F%E6%88%90%E5%99%A8/" title="高效分布式ID生成服务代码解析">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">高效分布式ID生成服务代码解析</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
+                    
+                      <a href="/2025/10/18/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87/" title="我的第一篇博客">
+                        <span class="hidden-mobile">我的第一篇博客</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
                     
                   </article>
                 </div>
