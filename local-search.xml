@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  
+  
+  
+  <entry>
+    <title>我的第一篇博客</title>
+    <link href="/2025/10/18/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87/"/>
+    <url>/2025/10/18/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87/</url>
+    
+    <content type="html"><![CDATA[<h1 id="👋-欢迎来到我的博客"><a href="#👋-欢迎来到我的博客" class="headerlink" title="👋 欢迎来到我的博客"></a>👋 欢迎来到我的博客</h1><p>这是我使用 <strong>Hexo</strong> 搭建的第一篇文章。<br>经过一番配置与调试，终于把这个博客跑起来了。<br>虽然只是一个简单的开始，但这对我来说，是一个新的起点。</p><hr><h2 id="🧭-为什么要写博客"><a href="#🧭-为什么要写博客" class="headerlink" title="🧭 为什么要写博客"></a>🧭 为什么要写博客</h2><p>主要有三个原因：</p><ol><li><p><strong>记录成长</strong>：<br>每一次解决问题、完成项目、或者偶然的灵感，都值得被记录下来。<br>写下来不仅能帮助自己复盘，也能帮助后来者少走弯路。</p></li><li><p><strong>整理思路</strong>：<br>当你尝试把知识写出来的时候，你会发现理解会更深。<br>写博客其实就是一种最好的学习方式。</p></li><li><p><strong>分享价值</strong>：<br>我相信知识是可以分享的。<br>如果我的文章能让某个人少查一点资料，那就很值得。</p></li></ol><hr><h2 id="⚙️-我的技术方向"><a href="#⚙️-我的技术方向" class="headerlink" title="⚙️ 我的技术方向"></a>⚙️ 我的技术方向</h2><p>目前主要学习和使用的技术包括：</p><ul><li>🖥️ 后端开发：<code>Spring Boot</code>、<code>Spring Cloud</code>  </li><li>💾 数据库：<code>MySQL 8.0</code>  </li><li>🌐 前端框架：<code>Vue</code>、<code>Uniapp</code>、<code>微信小程序</code>  </li><li>🐳 部署：<code>Docker</code>、<code>Linux</code>  </li><li>🤖 其他兴趣：AI 应用、直播系统开发、数据分析</li></ul><hr><h2 id="🚀-未来计划"><a href="#🚀-未来计划" class="headerlink" title="🚀 未来计划"></a>🚀 未来计划</h2><p>这个博客会陆续更新以下内容：</p><ul><li>项目实战笔记与技术总结  </li><li>编程与学习方法分享  </li><li>个人思考与生活记录</li></ul><p>希望能在这里不断成长，也期待遇见志同道合的朋友。</p><hr><h2 id="✨-写在最后"><a href="#✨-写在最后" class="headerlink" title="✨ 写在最后"></a>✨ 写在最后</h2><blockquote><p>「记录让人成长，分享让世界变得更好。」</p></blockquote><p>感谢你能看到这里。<br>如果你也在搭建自己的博客，可以留言交流，我们一起进步。  </p><p>—— <em>NowPion</em></p>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>随笔</tag>
+      
+      <tag>Hexo</tag>
+      
+      <tag>新起点</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Hello World</title>
+    <link href="/2025/10/18/hello-world/"/>
+    <url>/2025/10/18/hello-world/</url>
+    
+    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo new <span class="hljs-string">&quot;My New Post&quot;</span><br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo server<br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo generate<br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo deploy<br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  
+</search>
