@@ -1,0 +1,836 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="PostgreSQL 特点与安装（Docker）近期项目将采用 PostgreSQL 作为核心数据库。本文概述 PostgreSQL 的关键特性，并给出在 Windows 环境下使用 Docker 的快速安装与常用运维示例，帮助你低成本、可重复地完成本地或测试环境搭建。  为什么选择 PostgreSQL 开源且企业级：遵循 SQL 标准、功能完整、社区活跃。 强一致事务：ACID + MVCC">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PostgreSQL特点与安装">
+<meta property="og:url" content="https://blog.newpon.top/2025/10/25/Postgresql%E7%89%B9%E7%82%B9%E4%B8%8E%E5%AE%89%E8%A3%85/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="PostgreSQL 特点与安装（Docker）近期项目将采用 PostgreSQL 作为核心数据库。本文概述 PostgreSQL 的关键特性，并给出在 Windows 环境下使用 Docker 的快速安装与常用运维示例，帮助你低成本、可重复地完成本地或测试环境搭建。  为什么选择 PostgreSQL 开源且企业级：遵循 SQL 标准、功能完整、社区活跃。 强一致事务：ACID + MVCC">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-10-25T08:47:08.000Z">
+<meta property="article:modified_time" content="2025-10-25T08:55:08.326Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="PostgreSQL">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="数据库">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>PostgreSQL特点与安装 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.newpon.top","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>nieBlong</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="PostgreSQL特点与安装"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-10-25 16:47" pubdate>
+          2025年10月25日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          16 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">PostgreSQL特点与安装</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="PostgreSQL-特点与安装（Docker）"><a href="#PostgreSQL-特点与安装（Docker）" class="headerlink" title="PostgreSQL 特点与安装（Docker）"></a>PostgreSQL 特点与安装（Docker）</h1><p>近期项目将采用 <strong>PostgreSQL</strong> 作为核心数据库。本文概述 PostgreSQL 的关键特性，并给出在 Windows 环境下使用 <strong>Docker</strong> 的快速安装与常用运维示例，帮助你低成本、可重复地完成本地或测试环境搭建。</p>
+<hr>
+<h2 id="为什么选择-PostgreSQL"><a href="#为什么选择-PostgreSQL" class="headerlink" title="为什么选择 PostgreSQL"></a>为什么选择 PostgreSQL</h2><ul>
+<li>开源且企业级：遵循 SQL 标准、功能完整、社区活跃。</li>
+<li>强一致事务：ACID + MVCC 支持高并发读写且保证一致性。</li>
+<li>丰富数据类型：<code>JSON/JSONB</code>、数组、地理空间（PostGIS）等丰富类型。</li>
+<li>强大索引：<code>B-Tree</code>、<code>Hash</code>、<code>GIN</code>、<code>GiST</code>、<code>BRIN</code> 覆盖多场景查询。</li>
+<li>可扩展生态：扩展、插件和函数众多，适合复杂业务与数据分析。</li>
+<li>跨平台：Linux、macOS、Windows 通过 Docker 一致部署与运维。</li>
+</ul>
+<hr>
+<h2 id="核心特性速览"><a href="#核心特性速览" class="headerlink" title="核心特性速览"></a>核心特性速览</h2><ul>
+<li>事务与并发：MVCC 无锁读、事务隔离级别可配，适合高并发业务。</li>
+<li>JSONB：原生支持文档型数据与索引，兼顾结构化与半结构化场景。</li>
+<li>分区与复制：表分区、逻辑复制、流复制，适合大表与高可用方案。</li>
+<li>扩展生态：<code>pg_stat_statements</code>（性能分析）、<code>PostGIS</code>（GIS）、<code>uuid-ossp</code>（UUID）等。</li>
+<li>索引多样性：<code>GIN</code> 适合全文检索&#x2F;JSON，<code>GiST</code> 适合范围或空间，<code>BRIN</code> 适合超大顺序数据。</li>
+</ul>
+<hr>
+<h2 id="知识点详解"><a href="#知识点详解" class="headerlink" title="知识点详解"></a>知识点详解</h2><h3 id="架构与存储"><a href="#架构与存储" class="headerlink" title="架构与存储"></a>架构与存储</h3><ul>
+<li>进程模型：主进程（<code>postmaster</code>&#x2F;<code>postgres</code>）+ 每连接一个后台进程；辅助进程负责 <code>WAL Writer</code>、<code>Background Writer</code>、<code>Checkpointer</code>、<code>Autovacuum</code> 等。</li>
+<li>数据文件组织：库（<code>base/&lt;db_oid&gt;</code>）→ 表（多个段 <code>relfilenode</code>）→ 8KB 页（Page）→ 行（Tuple）。</li>
+<li>TOAST：大字段（如 <code>TEXT/JSONB</code>）溢出到 TOAST 表，降低主表膨胀与缓冲压力。</li>
+</ul>
+<h3 id="MVCC-与事务隔离级别"><a href="#MVCC-与事务隔离级别" class="headerlink" title="MVCC 与事务隔离级别"></a>MVCC 与事务隔离级别</h3><ul>
+<li>MVCC：行版本 + 可见性规则，读不阻塞写、写不阻塞读。</li>
+<li>隔离级别：<code>Read Committed</code>（默认）、<code>Repeatable Read</code>、<code>Serializable</code>。</li>
+<li>幻读与写偏斜：<code>Serializable</code> 使用 SSI 算法降低异常并发；谨慎选择隔离级别与锁策略。</li>
+</ul>
+<h3 id="WAL-与检查点"><a href="#WAL-与检查点" class="headerlink" title="WAL 与检查点"></a>WAL 与检查点</h3><ul>
+<li>WAL（预写日志）：确保崩溃恢复与复制；顺序写优化 IO。</li>
+<li>Checkpoint：将脏页刷盘并记录 LSN，降低恢复时间；频率与大小影响性能。</li>
+<li>关键参数：<code>wal_level</code>、<code>checkpoint_timeout</code>、<code>max_wal_size</code>、<code>min_wal_size</code>、<code>synchronous_commit</code>。</li>
+</ul>
+<h3 id="锁与并发控制"><a href="#锁与并发控制" class="headerlink" title="锁与并发控制"></a>锁与并发控制</h3><ul>
+<li>行级锁：<code>FOR UPDATE/SHARE</code>；避免长事务持锁。</li>
+<li>表级锁：<code>ACCESS SHARE/EXCLUSIVE</code> 等；DDL 可能触发表级锁。</li>
+<li>死锁分析：<code>pg_locks</code> + 日志；拆分事务、减少相互依赖顺序。</li>
+</ul>
+<h3 id="VACUUM-ANALYZE-与-Autovacuum"><a href="#VACUUM-ANALYZE-与-Autovacuum" class="headerlink" title="VACUUM&#x2F;ANALYZE 与 Autovacuum"></a>VACUUM&#x2F;ANALYZE 与 Autovacuum</h3><ul>
+<li>VACUUM：清理不可见行版本，避免膨胀与 XID wraparound。</li>
+<li>ANALYZE：更新统计信息，提升查询计划质量。</li>
+<li>Autovacuum：自动维护；参数如 <code>autovacuum_vacuum_scale_factor</code>、<code>autovacuum_analyze_scale_factor</code> 与 <code>naptime</code> 需按表规模调优。</li>
+</ul>
+<h3 id="查询优化与执行计划"><a href="#查询优化与执行计划" class="headerlink" title="查询优化与执行计划"></a>查询优化与执行计划</h3><ul>
+<li>使用 <code>EXPLAIN (ANALYZE, BUFFERS)</code> 观察真实耗时与 IO。</li>
+<li>关键算子：<code>Seq Scan</code>、<code>Index Scan</code>、<code>Bitmap Heap/Index Scan</code>、<code>Nested Loop</code>、<code>Hash Join</code>、<code>Merge Join</code>。</li>
+<li>常见优化：合理索引、避免函数对列包裹、分区裁剪、提高选择性统计、限制返回列与行数。</li>
+</ul>
+<h3 id="索引类型与适用场景"><a href="#索引类型与适用场景" class="headerlink" title="索引类型与适用场景"></a>索引类型与适用场景</h3><ul>
+<li><code>B-Tree</code>：通用比较与排序、前缀匹配。</li>
+<li><code>Hash</code>：等值查询；PostgreSQL 现支持 WAL，但总体用得较少。</li>
+<li><code>GIN</code>：倒排索引，适合 <code>JSONB</code>、全文检索、数组包含。</li>
+<li><code>GiST</code>：范围、空间、相似度；配合 PostGIS、trigram 相似度等。</li>
+<li><code>BRIN</code>：超大顺序数据（时间&#x2F;自增 ID），低维护成本。</li>
+<li>部分索引&#x2F;表达式索引：提高特定条件&#x2F;函数查询效率。</li>
+</ul>
+<h3 id="分区表与最佳实践"><a href="#分区表与最佳实践" class="headerlink" title="分区表与最佳实践"></a>分区表与最佳实践</h3><ul>
+<li>范式：<code>RANGE/LIST/HASH</code> 分区；按时间或业务键分区最常见。</li>
+<li>好处：裁剪加速查询、加速归档与维护、降低索引体量。</li>
+<li>注意：主键&#x2F;唯一约束需配合分区键；跨分区更新慎用；统计与 Autovacuum 策略需面向各分区。</li>
+</ul>
+<h3 id="复制与高可用"><a href="#复制与高可用" class="headerlink" title="复制与高可用"></a>复制与高可用</h3><ul>
+<li>物理复制：主从流复制（<code>wal_level=replica</code>）；备库只读。</li>
+<li>逻辑复制：按表级发布&#x2F;订阅；适合数据迁移与异构同步。</li>
+<li>同步与异步：同步复制确保提交安全、牺牲延迟；异步复制性能好但可能丢失极少量事务。</li>
+</ul>
+<h3 id="备份与恢复策略"><a href="#备份与恢复策略" class="headerlink" title="备份与恢复策略"></a>备份与恢复策略</h3><ul>
+<li>逻辑备份：<code>pg_dump/pg_restore</code>，适合结构迁移与小型库备份。</li>
+<li>物理备份：基于数据目录 + WAL（如 <code>pg_basebackup</code>），适合大库与精准时间点恢复（PITR）。</li>
+<li>PITR：通过 <code>restore_command</code> + WAL 归档，定位到指定时间或 LSN。</li>
+</ul>
+<h3 id="权限模型与安全实践"><a href="#权限模型与安全实践" class="headerlink" title="权限模型与安全实践"></a>权限模型与安全实践</h3><ul>
+<li>角色与权限：<code>ROLE</code> 可 <code>LOGIN</code>，通过 <code>GRANT</code> 赋权到对象级（库、模式、表、序列、函数）。</li>
+<li>最小权限原则：应用用户只给所需 DML 权限；分离 DDL 与管理角色。</li>
+<li>安全配置：<code>password_encryption</code>、<code>pg_hba.conf</code> 访问控制、SSL&#x2F;TLS。</li>
+</ul>
+<h3 id="扩展与常用插件"><a href="#扩展与常用插件" class="headerlink" title="扩展与常用插件"></a>扩展与常用插件</h3><ul>
+<li><code>pg_stat_statements</code>：慢查询分析与 SQL 聚合统计。</li>
+<li><code>uuid-ossp</code> 或 <code>pgcrypto</code>：生成&#x2F;处理 UUID。</li>
+<li><code>postgis</code>：GIS 能力；空间索引与空间查询。</li>
+<li><code>pg_trgm</code>：相似度与模糊匹配（支持 <code>%LIKE%</code> 优化与搜索）。</li>
+</ul>
+<h3 id="JSONB-实战技巧"><a href="#JSONB-实战技巧" class="headerlink" title="JSONB 实战技巧"></a>JSONB 实战技巧</h3><ul>
+<li>操作符：<code>-&gt;</code>（取对象）、<code>-&gt;&gt;</code>（文本）、<code>@&gt;</code>（包含）、<code>?</code>（键存在）。</li>
+<li>索引建议：<code>GIN</code> + <code>jsonb_path_ops</code> 提升包含查询；为常用路径建表达式索引。</li>
+</ul>
+<h3 id="时间与时区处理"><a href="#时间与时区处理" class="headerlink" title="时间与时区处理"></a>时间与时区处理</h3><ul>
+<li>使用 <code>TIMESTAMPTZ</code> 存储带时区时间；统一用 UTC 入库、业务层按地区显示。</li>
+<li>设置 <code>TimeZone</code> 与 <code>IntervalStyle</code>，避免夏令时等边界问题。</li>
+</ul>
+<h3 id="管理与调优常见参数"><a href="#管理与调优常见参数" class="headerlink" title="管理与调优常见参数"></a>管理与调优常见参数</h3><ul>
+<li>内存：<code>shared_buffers</code>（25% RAM 起步）、<code>work_mem</code>（按并发控制）、<code>maintenance_work_mem</code>。</li>
+<li>并发：<code>max_connections</code>（配合连接池）、<code>effective_cache_size</code>（估算系统缓存）。</li>
+<li>写入：<code>wal_compression</code>、<code>synchronous_commit</code>、<code>checkpoint_completion_target</code>。</li>
+</ul>
+<h3 id="常用运维命令"><a href="#常用运维命令" class="headerlink" title="常用运维命令"></a>常用运维命令</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 连接</span><br>psql <span class="hljs-string">&quot;postgres://pguser:pgpass@localhost:5432/demo&quot;</span><br><span class="hljs-comment"># 查看会话与锁</span><br>\conninfo<br>SELECT * FROM pg_stat_activity;<br>SELECT * FROM pg_locks;<br><span class="hljs-comment"># 索引与表统计</span><br>\d+ public.user_profile<br>SELECT * FROM pg_stat_user_tables;<br><span class="hljs-comment"># 执行计划</span><br>EXPLAIN (ANALYZE, BUFFERS) SELECT * FROM public.user_profile WHERE <span class="hljs-built_in">id</span> &lt; 1000;<br></code></pre></td></tr></table></figure>
+
+<h3 id="psql-常用快捷"><a href="#psql-常用快捷" class="headerlink" title="psql 常用快捷"></a>psql 常用快捷</h3><ul>
+<li><code>\l</code> 列出数据库，<code>\c dbname</code> 切换，<code>\dt</code> 列出表，<code>\di</code> 索引。</li>
+<li><code>\x</code> 切换扩展显示，<code>\timing</code> 打开计时，<code>\watch</code> 循环执行当前查询。</li>
+</ul>
+<hr>
+<h2 id="使用-Docker-安装-PostgreSQL"><a href="#使用-Docker-安装-PostgreSQL" class="headerlink" title="使用 Docker 安装 PostgreSQL"></a>使用 Docker 安装 PostgreSQL</h2><p>以下示例基于 <strong>Docker Desktop for Windows</strong>。</p>
+<h3 id="1）拉取镜像"><a href="#1）拉取镜像" class="headerlink" title="1）拉取镜像"></a>1）拉取镜像</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker pull postgres:16<br></code></pre></td></tr></table></figure>
+
+<h3 id="2）启动容器（持久化数据）"><a href="#2）启动容器（持久化数据）" class="headerlink" title="2）启动容器（持久化数据）"></a>2）启动容器（持久化数据）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker run -d \<br>  --name postgres16 \<br>  -e POSTGRES_USER=pguser \<br>  -e POSTGRES_PASSWORD=pgpass \<br>  -e POSTGRES_DB=demo \<br>  -e TZ=Asia/Shanghai \<br>  -p 5432:5432 \<br>  -v <span class="hljs-string">&quot;h:/data/postgres:/var/lib/postgresql/data&quot;</span> \<br>  postgres:16<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><code>POSTGRES_USER/POSTGRES_PASSWORD/POSTGRES_DB</code>：初始化用户、密码与数据库。</li>
+<li><code>-v h:/data/postgres:/var/lib/postgresql/data</code>：将数据持久化到本地磁盘（确保 Docker Desktop 共享了该盘）。</li>
+<li><code>-p 5432:5432</code>：映射主机端口到容器端口。</li>
+<li><code>TZ</code>：设置时区，便于日志与时间一致。</li>
+</ul>
+<p>查看容器状态与日志：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker ps<br>docker logs -f postgres16<br></code></pre></td></tr></table></figure>
+
+<h3 id="3）连接测试"><a href="#3）连接测试" class="headerlink" title="3）连接测试"></a>3）连接测试</h3><ul>
+<li>本机工具：<code>psql -h localhost -U pguser -d demo</code>（首次会提示输入密码 <code>pgpass</code>）。</li>
+<li>连接串：<code>postgres://pguser:pgpass@localhost:5432/demo</code>。</li>
+<li>Java&#x2F;JDBC：<code>jdbc:postgresql://localhost:5432/demo</code>。</li>
+</ul>
+<hr>
+<h2 id="使用-Docker-Compose（推荐）"><a href="#使用-Docker-Compose（推荐）" class="headerlink" title="使用 Docker Compose（推荐）"></a>使用 Docker Compose（推荐）</h2><p>在项目根目录新建 <code>docker-compose.yml</code>：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">version:</span> <span class="hljs-string">&quot;3.8&quot;</span><br><span class="hljs-attr">services:</span><br>  <span class="hljs-attr">postgres:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">postgres:16</span><br>    <span class="hljs-attr">container_name:</span> <span class="hljs-string">postgres16</span><br>    <span class="hljs-attr">environment:</span><br>      <span class="hljs-attr">POSTGRES_USER:</span> <span class="hljs-string">pguser</span><br>      <span class="hljs-attr">POSTGRES_PASSWORD:</span> <span class="hljs-string">pgpass</span><br>      <span class="hljs-attr">POSTGRES_DB:</span> <span class="hljs-string">demo</span><br>      <span class="hljs-attr">TZ:</span> <span class="hljs-string">Asia/Shanghai</span><br>    <span class="hljs-attr">ports:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;5432:5432&quot;</span><br>    <span class="hljs-attr">volumes:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">./data/postgres:/var/lib/postgresql/data</span><br>    <span class="hljs-attr">restart:</span> <span class="hljs-string">unless-stopped</span><br></code></pre></td></tr></table></figure>
+
+<p>启动与关闭：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker compose up -d<br>docker compose down<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>将数据目录映射为 <code>./data/postgres</code>，便于项目内统一管理。</p>
+</blockquote>
+<hr>
+<h2 id="常用运维示例"><a href="#常用运维示例" class="headerlink" title="常用运维示例"></a>常用运维示例</h2><h3 id="创建用户与数据库"><a href="#创建用户与数据库" class="headerlink" title="创建用户与数据库"></a>创建用户与数据库</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-comment">-- 进入 psql 后执行：</span><br><span class="hljs-keyword">CREATE</span> ROLE appuser <span class="hljs-keyword">WITH</span> LOGIN PASSWORD <span class="hljs-string">&#x27;appPass&#x27;</span> NOSUPERUSER;<br><span class="hljs-keyword">CREATE</span> DATABASE appdb OWNER appuser;<br><span class="hljs-keyword">GRANT</span> <span class="hljs-keyword">ALL</span> PRIVILEGES <span class="hljs-keyword">ON</span> DATABASE appdb <span class="hljs-keyword">TO</span> appuser;<br></code></pre></td></tr></table></figure>
+
+<h3 id="基本表与索引"><a href="#基本表与索引" class="headerlink" title="基本表与索引"></a>基本表与索引</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE TABLE</span> public.user_profile (<br>  id         BIGSERIAL <span class="hljs-keyword">PRIMARY KEY</span>,<br>  nickname   TEXT,<br>  attrs      JSONB,<br>  created_at TIMESTAMPTZ <span class="hljs-keyword">DEFAULT</span> NOW()<br>);<br><br><span class="hljs-comment">-- JSONB 的 GIN 索引（适合键值、全文检索等）</span><br><span class="hljs-keyword">CREATE</span> INDEX idx_user_profile_attrs_gin <span class="hljs-keyword">ON</span> public.user_profile <span class="hljs-keyword">USING</span> GIN (attrs);<br></code></pre></td></tr></table></figure>
+
+<h3 id="备份与恢复（容器内执行）"><a href="#备份与恢复（容器内执行）" class="headerlink" title="备份与恢复（容器内执行）"></a>备份与恢复（容器内执行）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 逻辑备份（导出为 .sql）</span><br>docker <span class="hljs-built_in">exec</span> -t postgres16 pg_dump -U pguser -d demo &gt; demo_backup.sql<br><br><span class="hljs-comment"># 恢复（先创建空库，再执行导入）</span><br>docker <span class="hljs-built_in">exec</span> -i postgres16 psql -U pguser -d demo &lt; demo_backup.sql<br></code></pre></td></tr></table></figure>
+
+<h3 id="性能与维护建议"><a href="#性能与维护建议" class="headerlink" title="性能与维护建议"></a>性能与维护建议</h3><ul>
+<li>开启并观察 <code>pg_stat_statements</code> 进行慢查询分析。</li>
+<li>合理设置：<code>shared_buffers</code>、<code>work_mem</code>、<code>effective_cache_size</code>（生产环境按资源调优）。</li>
+<li>定期 <code>VACUUM</code>&#x2F;<code>ANALYZE</code> 保持统计信息与空间健康。</li>
+<li>针对大表使用分区与合适的索引类型，避免全表扫描。</li>
+</ul>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>PostgreSQL 以强一致事务、丰富索引与扩展生态著称，既能支撑传统 OLTP，也能兼顾文档与分析场景。结合 Docker，可以在本地与测试环境实现快速、可重复的部署与运维。实际落地时，建议评估数据规模与业务特点，合理选择索引与分区策略，并使用 <code>pg_stat_statements</code> 持续优化查询性能。</p>
+<p>—— <em>NowPion</em></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/" class="category-chain-item">技术分享</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/PostgreSQL/" class="print-no-link">#PostgreSQL</a>
+      
+        <a href="/tags/Docker/" class="print-no-link">#Docker</a>
+      
+        <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/" class="print-no-link">#数据库</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>PostgreSQL特点与安装</div>
+      <div>https://blog.newpon.top/2025/10/25/Postgresql特点与安装/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>John Doe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年10月25日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/10/25/Nginx%E4%B8%8ECaddy/" title="Nginx与Caddy">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Nginx与Caddy</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/10/18/%E5%88%86%E5%B8%83%E5%BC%8FID%E7%94%9F%E6%88%90%E5%99%A8/" title="高效分布式ID生成服务代码解析">
+                        <span class="hidden-mobile">高效分布式ID生成服务代码解析</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'NowPion/NowPion.github.io');
+      s.setAttribute('issue-term', 'title');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
