@@ -1,0 +1,737 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="一、前提准备在开始整合之前，你需要准备以下配置：  AppID：支付宝应用唯一标识   应用私钥（appPrivateKey）：自己生成，用于签名   支付宝公钥（alipayPublicKey）：从支付宝开放平台获取   应用公钥（appPublicKey）：配置在支付宝后台   异步回调地址（notifyUrl）：支付成功后支付宝通知的接口   支付宝网关地址（沙箱环境为 https:&#x2F;&#x2F;op">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring Boot 整合支付宝">
+<meta property="og:url" content="https://blog.newpon.top/2025/10/30/SpringBoot%E6%95%B4%E5%90%88%E6%94%AF%E4%BB%98%E5%AE%9D/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="一、前提准备在开始整合之前，你需要准备以下配置：  AppID：支付宝应用唯一标识   应用私钥（appPrivateKey）：自己生成，用于签名   支付宝公钥（alipayPublicKey）：从支付宝开放平台获取   应用公钥（appPublicKey）：配置在支付宝后台   异步回调地址（notifyUrl）：支付成功后支付宝通知的接口   支付宝网关地址（沙箱环境为 https:&#x2F;&#x2F;op">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-10-30T12:08:55.000Z">
+<meta property="article:modified_time" content="2025-10-30T12:24:35.683Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Spring Boot">
+<meta property="article:tag" content="支付宝">
+<meta property="article:tag" content="支付集成">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Spring Boot 整合支付宝 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.newpon.top","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>nieBlong</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Spring Boot 整合支付宝"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-10-30 20:08" pubdate>
+          2025年10月30日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          941 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          8 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Spring Boot 整合支付宝</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="一、前提准备"><a href="#一、前提准备" class="headerlink" title="一、前提准备"></a>一、前提准备</h1><p>在开始整合之前，你需要准备以下配置：</p>
+<ul>
+<li><strong>AppID</strong>：支付宝应用唯一标识  </li>
+<li><strong>应用私钥（appPrivateKey）</strong>：自己生成，用于签名  </li>
+<li><strong>支付宝公钥（alipayPublicKey）</strong>：从支付宝开放平台获取  </li>
+<li><strong>应用公钥（appPublicKey）</strong>：配置在支付宝后台  </li>
+<li><strong>异步回调地址（notifyUrl）</strong>：支付成功后支付宝通知的接口  </li>
+<li><strong>支付宝网关地址</strong>（沙箱环境为 <code>https://openapi-sandbox.dl.alipaydev.com/gateway.do</code>）</li>
+</ul>
+<hr>
+<h1 id="二、Maven-依赖"><a href="#二、Maven-依赖" class="headerlink" title="二、Maven 依赖"></a>二、Maven 依赖</h1><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependencies</span>&gt;</span><br>    <span class="hljs-comment">&lt;!-- 支付宝 Easy SDK --&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.alipay.sdk<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>alipay-easysdk<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.2.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><br>    <span class="hljs-comment">&lt;!-- 支付宝官方 Java SDK --&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.alipay.sdk<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>alipay-sdk-java<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>4.34.0.ALL<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependencies</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>💡 推荐使用 <strong>Easy SDK</strong> 进行业务封装，但如需更灵活的控制，可配合官方 SDK 一起使用。</p>
+</blockquote>
+<hr>
+<h1 id="三、配置文件（application-yml）"><a href="#三、配置文件（application-yml）" class="headerlink" title="三、配置文件（application.yml）"></a>三、配置文件（application.yml）</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">alipay:</span><br>  <span class="hljs-attr">appId:</span>           <span class="hljs-comment"># 支付宝应用AppID</span><br>  <span class="hljs-attr">appPrivateKey:</span>   <span class="hljs-comment"># 应用私钥</span><br>  <span class="hljs-attr">alipayPublicKey:</span> <span class="hljs-comment"># 支付宝公钥</span><br>  <span class="hljs-attr">notifyUrl:</span>       <span class="hljs-comment"># 支付成功后的异步回调地址</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="四、支付宝配置类初始化"><a href="#四、支付宝配置类初始化" class="headerlink" title="四、支付宝配置类初始化"></a>四、支付宝配置类初始化</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Data</span><br><span class="hljs-meta">@Component</span><br><span class="hljs-meta">@ConfigurationProperties(prefix = &quot;alipay&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AliPayConfig</span> &#123;<br>    <span class="hljs-keyword">private</span> String appId;<br>    <span class="hljs-keyword">private</span> String appPrivateKey;<br>    <span class="hljs-keyword">private</span> String alipayPublicKey;<br>    <span class="hljs-keyword">private</span> String notifyUrl;<br><br>    <span class="hljs-meta">@PostConstruct</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">init</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-type">Config</span> <span class="hljs-variable">config</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Config</span>();<br>        config.protocol = <span class="hljs-string">&quot;https&quot;</span>;<br>        config.gatewayHost = <span class="hljs-string">&quot;openapi.alipaydev.com&quot;</span>; <span class="hljs-comment">// 沙箱网关</span><br>        config.signType = <span class="hljs-string">&quot;RSA2&quot;</span>;<br>        config.appId = <span class="hljs-built_in">this</span>.appId;<br>        config.merchantPrivateKey = <span class="hljs-built_in">this</span>.appPrivateKey;<br>        config.alipayPublicKey = <span class="hljs-built_in">this</span>.alipayPublicKey;<br>        config.notifyUrl = <span class="hljs-built_in">this</span>.notifyUrl;<br>        Factory.setOptions(config);<br>        System.out.println(<span class="hljs-string">&quot;✅ 支付宝SDK初始化成功&quot;</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="五、支付与回调接口"><a href="#五、支付与回调接口" class="headerlink" title="五、支付与回调接口"></a>五、支付与回调接口</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@RestController</span><br><span class="hljs-meta">@RequestMapping(&quot;/alipay&quot;)</span><br><span class="hljs-meta">@Transactional(rollbackFor = Exception.class)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">AliPayController</span> &#123;<br><br>    <span class="hljs-meta">@Resource</span><br>    <span class="hljs-keyword">private</span> AliPayConfig aliPayConfig;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">GATEWAY_URL</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;https://openapi-sandbox.dl.alipaydev.com/gateway.do&quot;</span>;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">FORMAT</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;JSON&quot;</span>;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">CHARSET</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;utf-8&quot;</span>;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">String</span> <span class="hljs-variable">SIGN_TYPE</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;RSA2&quot;</span>;<br><br>    <span class="hljs-comment">/** 获取支付二维码 **/</span><br>    <span class="hljs-meta">@GetMapping(&quot;/pay&quot;)</span> <span class="hljs-comment">// /alipay/pay?subject=测试订单&amp;traceNo=123456&amp;totalAmount=0.01</span><br>    <span class="hljs-keyword">public</span> Object <span class="hljs-title function_">pay</span><span class="hljs-params">(AliPay aliPay)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-type">AlipayClient</span> <span class="hljs-variable">client</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">DefaultAlipayClient</span>(<br>                GATEWAY_URL,<br>                aliPayConfig.getAppId(),<br>                aliPayConfig.getAppPrivateKey(),<br>                FORMAT,<br>                CHARSET,<br>                aliPayConfig.getAlipayPublicKey(),<br>                SIGN_TYPE<br>        );<br><br>        <span class="hljs-type">AlipayTradePrecreateRequest</span> <span class="hljs-variable">request</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AlipayTradePrecreateRequest</span>();<br>        <span class="hljs-type">AlipayTradePrecreateModel</span> <span class="hljs-variable">model</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">AlipayTradePrecreateModel</span>();<br>        model.setOutTradeNo(aliPay.getTraceNo());<br>        model.setSubject(aliPay.getSubject());<br>        model.setTotalAmount(String.valueOf(aliPay.getTotalAmount()));<br>        request.setBizModel(model);<br>        request.setNotifyUrl(aliPayConfig.getNotifyUrl());<br><br>        <span class="hljs-type">AlipayTradePrecreateResponse</span> <span class="hljs-variable">response</span> <span class="hljs-operator">=</span> client.execute(request);<br>        <span class="hljs-keyword">return</span> response;<br>    &#125;<br><br>    <span class="hljs-comment">/** 支付宝异步通知回调 **/</span><br>    <span class="hljs-meta">@PostMapping(&quot;/notify&quot;)</span><br>    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">notify</span><span class="hljs-params">(HttpServletRequest request)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-keyword">if</span> (<span class="hljs-string">&quot;TRADE_SUCCESS&quot;</span>.equals(request.getParameter(<span class="hljs-string">&quot;trade_status&quot;</span>))) &#123;<br>            System.out.println(<span class="hljs-string">&quot;========= 支付宝异步回调 =========&quot;</span>);<br><br>            Map&lt;String, String&gt; params = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();<br>            request.getParameterMap().forEach((k, v) -&gt; params.put(k, v[<span class="hljs-number">0</span>]));<br><br>            <span class="hljs-keyword">if</span> (Factory.Payment.Common().verifyNotify(params)) &#123;<br>                <span class="hljs-comment">// ✅ 验签通过</span><br>                System.out.println(<span class="hljs-string">&quot;交易名称: &quot;</span> + params.get(<span class="hljs-string">&quot;subject&quot;</span>));<br>                System.out.println(<span class="hljs-string">&quot;交易状态: &quot;</span> + params.get(<span class="hljs-string">&quot;trade_status&quot;</span>));<br>                System.out.println(<span class="hljs-string">&quot;支付宝交易凭证号: &quot;</span> + params.get(<span class="hljs-string">&quot;trade_no&quot;</span>));<br>                System.out.println(<span class="hljs-string">&quot;商户订单号: &quot;</span> + params.get(<span class="hljs-string">&quot;out_trade_no&quot;</span>));<br>                System.out.println(<span class="hljs-string">&quot;交易金额: &quot;</span> + params.get(<span class="hljs-string">&quot;total_amount&quot;</span>));<br>                System.out.println(<span class="hljs-string">&quot;买家ID: &quot;</span> + params.get(<span class="hljs-string">&quot;buyer_id&quot;</span>));<br>                System.out.println(<span class="hljs-string">&quot;付款时间: &quot;</span> + params.get(<span class="hljs-string">&quot;gmt_payment&quot;</span>));<br>                <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> 更新订单状态为“已支付”</span><br>            &#125;<br>        &#125;<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;success&quot;</span>;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="六、生成支付二维码"><a href="#六、生成支付二维码" class="headerlink" title="六、生成支付二维码"></a>六、生成支付二维码</h1><p>返回的 JSON 数据中会包含一个 <code>qrCode</code> 字段，<br>可使用第三方工具（如 <code>ZXing</code>）生成二维码进行扫码支付。</p>
+<p>例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">String</span> <span class="hljs-variable">qrCode</span> <span class="hljs-operator">=</span> response.getQrCode();<br>QRCodeUtil.generate(qrCode, <span class="hljs-string">&quot;alipay_qr.png&quot;</span>);<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>在支付宝沙箱模式中，你可以使用沙箱钱包 App 扫码模拟支付。</p>
+</blockquote>
+<hr>
+<h1 id="七、常见问题-建议"><a href="#七、常见问题-建议" class="headerlink" title="七、常见问题 &amp; 建议"></a>七、常见问题 &amp; 建议</h1><ol>
+<li><p><strong>测试环境</strong><br>   使用 <a target="_blank" rel="noopener" href="https://open.alipay.com/developmentAccess/devSandbox">支付宝开放平台沙箱环境</a> 测试，无需真实支付。  </p>
+</li>
+<li><p><strong>异步通知</strong><br>   回调接口必须为公网可访问地址，否则支付宝无法回调。  </p>
+</li>
+<li><p><strong>密钥安全</strong><br>   请勿在前端或公开仓库暴露私钥信息。  </p>
+</li>
+<li><p><strong>生产环境网关</strong><br>   正式环境网关为 <code>https://openapi.alipay.com/gateway.do</code>。</p>
+</li>
+</ol>
+<hr>
+<h1 id="八、总结"><a href="#八、总结" class="headerlink" title="八、总结"></a>八、总结</h1><p>本文通过简单的配置和代码实现了：</p>
+<ul>
+<li>支付宝 SDK 初始化  </li>
+<li>生成支付二维码接口  </li>
+<li>异步回调验签逻辑</li>
+</ul>
+<p>至此，一个完整的 <strong>支付宝扫码支付功能</strong> 就整合完成了。<br>如需扩展，可继续实现退款、查询、关闭订单等接口。</p>
+<hr>
+<blockquote>
+<p>✍️ <em>Author: NowPion</em><br>💬 “用代码驱动业务，让支付更简单。”</p>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/" class="category-chain-item">技术分享</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Spring-Boot/" class="print-no-link">#Spring Boot</a>
+      
+        <a href="/tags/%E6%94%AF%E4%BB%98%E5%AE%9D/" class="print-no-link">#支付宝</a>
+      
+        <a href="/tags/%E6%94%AF%E4%BB%98%E9%9B%86%E6%88%90/" class="print-no-link">#支付集成</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Spring Boot 整合支付宝</div>
+      <div>https://blog.newpon.top/2025/10/30/SpringBoot整合支付宝/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>John Doe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年10月30日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/10/25/Nginx%E4%B8%8ECaddy/" title="Nginx与Caddy">
+                        <span class="hidden-mobile">Nginx与Caddy</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'NowPion/NowPion.github.io');
+      s.setAttribute('issue-term', 'title');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
