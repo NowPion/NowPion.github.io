@@ -1,0 +1,811 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="一、Maven 依赖123456789101112&lt;dependencies&gt;        &lt;dependency&gt;            &lt;groupId&gt;io.netty&lt;&#x2F;groupId&gt;            &lt;artifactId&gt;netty-all&lt;&#x2F;artifactId&gt;            &lt;ver">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring Boot 整合Netty框架">
+<meta property="og:url" content="https://blog.newpon.top/2025/11/04/SpringBoot%E6%95%B4%E5%90%88Netty%E6%A1%86%E6%9E%B6/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="一、Maven 依赖123456789101112&lt;dependencies&gt;        &lt;dependency&gt;            &lt;groupId&gt;io.netty&lt;&#x2F;groupId&gt;            &lt;artifactId&gt;netty-all&lt;&#x2F;artifactId&gt;            &lt;ver">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-11-04T12:08:55.000Z">
+<meta property="article:modified_time" content="2025-11-04T11:07:10.832Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Spring Boot">
+<meta property="article:tag" content="Im系统">
+<meta property="article:tag" content="Netty框架">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Spring Boot 整合Netty框架 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.newpon.top","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>nieBlong</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Spring Boot 整合Netty框架"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-11-04 20:08" pubdate>
+          2025年11月4日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.9k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          16 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Spring Boot 整合Netty框架</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <hr>
+<h1 id="一、Maven-依赖"><a href="#一、Maven-依赖" class="headerlink" title="一、Maven 依赖"></a>一、Maven 依赖</h1><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependencies</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>io.netty<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>netty-all<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>4.1.97.Final<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.alibaba<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>fastjson<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.0.10<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependencies</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="二、模块概览与结构"><a href="#二、模块概览与结构" class="headerlink" title="二、模块概览与结构"></a>二、模块概览与结构</h1><ul>
+<li>核心功能：基于 Netty 的 IM 长连接服务，统一编解码与消息路由。</li>
+<li>主要目录与类：<ul>
+<li><code>common/</code><ul>
+<li><code>ImMsg</code>：消息模型，固定头（magic、len、code）+ 变长体（body）。</li>
+<li><code>ImMsgDecode</code>：解码器，校验 magic，读取长度与消息码，解析 body。</li>
+<li><code>ImMsgEncode</code>：编码器，按顺序写入头部与消息体。</li>
+</ul>
+</li>
+<li><code>handler/</code><ul>
+<li><code>ImServerCoreHandler</code>：核心入站处理器，统一转发到工厂。</li>
+<li><code>ImHandlerFactory</code>、<code>ImHandlerFactoryImpl</code>：根据消息码路由到具体处理器。</li>
+<li><code>SimplyHandler</code>：处理器接口，<code>handle(ctx, msg)</code>。</li>
+<li><code>impl/</code>：<code>LoginMsgHandler</code>、<code>LogoutMsgHandler</code>、<code>HearteatMsgHandler</code>、<code>BizImMsgHandler</code>。</li>
+</ul>
+</li>
+<li>根包：<code>NettyImServerApplication</code>：Netty 服务端启动入口。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h1 id="三、服务端启动流程（NettyImServerApplication）"><a href="#三、服务端启动流程（NettyImServerApplication）" class="headerlink" title="三、服务端启动流程（NettyImServerApplication）"></a>三、服务端启动流程（NettyImServerApplication）</h1><ul>
+<li>事件循环：创建 <code>bossGroup</code>（处理 accept）与 <code>workerGroup</code>（处理 read&#x2F;write）。</li>
+<li>服务引导：<code>ServerBootstrap</code> 绑定 NIO 通道 <code>NioServerSocketChannel</code>。</li>
+<li>Pipeline 初始化：<ul>
+<li>添加 <code>ImMsgDecode</code>（解码）、<code>ImMsgEncode</code>（编码）。</li>
+<li>添加 <code>ImServerCoreHandler</code>（统一分发）。</li>
+</ul>
+</li>
+<li>关闭钩子：JVM 退出时优雅关闭两个事件循环组。</li>
+<li>绑定监听：端口示例 <code>9090</code>，阻塞主线程等待 <code>closeFuture</code>。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">NettyImServerApplication</span> &#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">Logger</span> <span class="hljs-variable">LOGGER</span> <span class="hljs-operator">=</span> LoggerFactory.getLogger(NettyImServerApplication.class);<br>    <span class="hljs-comment">//指定端口</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> port;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">getPort</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> port;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setPort</span><span class="hljs-params">(<span class="hljs-type">int</span> port)</span> &#123;<br>        <span class="hljs-built_in">this</span>.port = port;<br>    &#125;<br>    <span class="hljs-comment">//基于netty启动java进程</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">startApplication</span><span class="hljs-params">(<span class="hljs-type">int</span> port)</span> <span class="hljs-keyword">throws</span> InterruptedException &#123;<br>        setPort(port);<br>        <span class="hljs-comment">//处理accept事件</span><br>        <span class="hljs-type">NioEventLoopGroup</span> <span class="hljs-variable">bossGroup</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">NioEventLoopGroup</span>();<br>        <span class="hljs-comment">//处理read&amp;write事件</span><br>        <span class="hljs-type">NioEventLoopGroup</span> <span class="hljs-variable">workerGroup</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">NioEventLoopGroup</span>();<br>        <span class="hljs-type">ServerBootstrap</span> <span class="hljs-variable">bootstrap</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ServerBootstrap</span>();<br>        bootstrap.group(bossGroup, workerGroup);<br>        bootstrap.channel(NioServerSocketChannel.class);<br>        <span class="hljs-comment">//netty初始化相关handler</span><br>        bootstrap.childHandler(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ChannelInitializer</span>&lt;&gt;() &#123;<br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">initChannel</span><span class="hljs-params">(Channel channel)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>                <span class="hljs-comment">//打印日志</span><br>                LOGGER.info(<span class="hljs-string">&quot;初始化连接通道&quot;</span>);<br>                <span class="hljs-comment">//设计消息体</span><br>                <span class="hljs-comment">//添加编码器</span><br>                <span class="hljs-comment">//添加解码器</span><br>                channel.pipeline().addLast(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ImMsgDecode</span>());<br>                channel.pipeline().addLast(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ImMsgEncode</span>());<br>                <span class="hljs-comment">//添加核心handler</span><br>                channel.pipeline().addLast(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ImServerCoreHandler</span>());<br><br>            &#125;<br>        &#125;);<br>        <span class="hljs-comment">//基于jvm钩子函数实现关闭</span><br>        Runtime.getRuntime().addShutdownHook(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Thread</span>(() -&gt; &#123;<br>            <span class="hljs-comment">//关闭线程池</span><br>            bossGroup.shutdownGracefully();<br>            <span class="hljs-comment">//关闭线程池</span><br>            workerGroup.shutdownGracefully();<br>        &#125;));<br>        <span class="hljs-type">ChannelFuture</span> <span class="hljs-variable">channelFuture</span> <span class="hljs-operator">=</span> bootstrap.bind(port).sync();<br>        LOGGER.info(<span class="hljs-string">&quot;netty im server 启动成功，监听端口：&#123;&#125;&quot;</span> + port);<br>        <span class="hljs-comment">//阻塞主线程，直到channel关闭</span><br>        channelFuture.channel().closeFuture().sync();<br><br>    &#125;<br>     <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> InterruptedException &#123;<br>        <span class="hljs-type">NettyImServerApplication</span> <span class="hljs-variable">server</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">NettyImServerApplication</span>();<br>        server.startApplication(<span class="hljs-number">9090</span>);<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="四、协议与编解码设计（ImMsg-ImMsgDecode-ImMsgEncode）"><a href="#四、协议与编解码设计（ImMsg-ImMsgDecode-ImMsgEncode）" class="headerlink" title="四、协议与编解码设计（ImMsg &#x2F; ImMsgDecode &#x2F; ImMsgEncode）"></a>四、协议与编解码设计（ImMsg &#x2F; ImMsgDecode &#x2F; ImMsgEncode）</h1><ul>
+<li>消息头部：<ul>
+<li><code>magic</code>：<code>short</code> 魔数校验，模块设定为 <code>19231</code>。</li>
+<li><code>len</code>：<code>int</code>，消息体字节长度。</li>
+<li><code>code</code>：<code>int</code>，消息类型码（登录、登出、心跳、业务）。</li>
+</ul>
+</li>
+<li>消息体：<code>byte[] body</code>，变长二进制内容。</li>
+<li>解码关键点：<ul>
+<li>先判断可读字节是否满足基础头部长度（<code>BASE_LEN = 2 + 4 + 4</code>）。</li>
+<li>读取并校验 <code>magic</code> 不合法直接 <code>ctx.close()</code>。</li>
+<li>读取 <code>len</code> 与 <code>code</code> 后，如果缓冲区不足，回滚读指针并等待。</li>
+<li>读取 <code>body</code> 并封装为 <code>ImMsg</code> 对象。</li>
+</ul>
+</li>
+<li>编码流程：按头部顺序写出，再写入 <code>body</code>。</li>
+<li>快速构造体：<code>ImMsg.build(code, data)</code> 便于测试。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ImMsg</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Serializable</span> &#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">long</span> <span class="hljs-variable">serialVersionUID</span> <span class="hljs-operator">=</span> -<span class="hljs-number">448787845159289179L</span>;<br>    <span class="hljs-comment">//基本校验</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-type">short</span> magic;<br><br>    <span class="hljs-comment">//内容长度</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> len;<br><br>    <span class="hljs-comment">//消息类型</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> code;<br><br>    <span class="hljs-comment">//存储消息内容</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-type">byte</span>[] body;<br><br><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">short</span> <span class="hljs-title function_">getMagic</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> magic;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setMagic</span><span class="hljs-params">(<span class="hljs-type">short</span> magic)</span> &#123;<br>        <span class="hljs-built_in">this</span>.magic = magic;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">getLen</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> len;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setLen</span><span class="hljs-params">(<span class="hljs-type">int</span> len)</span> &#123;<br>        <span class="hljs-built_in">this</span>.len = len;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">getCode</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> code;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setCode</span><span class="hljs-params">(<span class="hljs-type">int</span> code)</span> &#123;<br>        <span class="hljs-built_in">this</span>.code = code;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">byte</span>[] getBody() &#123;<br>        <span class="hljs-keyword">return</span> body;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setBody</span><span class="hljs-params">(<span class="hljs-type">byte</span>[] body)</span> &#123;<br>        <span class="hljs-built_in">this</span>.body = body;<br>    &#125;<br>    <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> ImMsg <span class="hljs-title function_">build</span><span class="hljs-params">(<span class="hljs-type">int</span> code,String data)</span> &#123;<br>        <span class="hljs-type">ImMsg</span> <span class="hljs-variable">imMsg</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ImMsg</span>();<br>        imMsg.setMagic((<span class="hljs-type">short</span>) <span class="hljs-number">19231</span>);<br>        imMsg.setLen(data.getBytes().length);<br>        imMsg.setCode(code);<br>        imMsg.setBody(data.getBytes());<br>        <span class="hljs-keyword">return</span> imMsg;<br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ImMsgDecode</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">ByteToMessageDecoder</span> &#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> <span class="hljs-type">int</span> <span class="hljs-variable">BASE_LEN</span> <span class="hljs-operator">=</span> <span class="hljs-number">2</span> + <span class="hljs-number">4</span> + <span class="hljs-number">4</span>; <span class="hljs-comment">// magic + len + code</span><br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">decode</span><span class="hljs-params">(ChannelHandlerContext ctx, ByteBuf byteBuf, List&lt;Object&gt; out)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-keyword">if</span> (byteBuf.readableBytes() &lt; BASE_LEN) &#123;<br>            <span class="hljs-keyword">return</span>;<br>        &#125;<br><br>        byteBuf.markReaderIndex(); <span class="hljs-comment">// 标记读指针</span><br><br>        <span class="hljs-type">short</span> <span class="hljs-variable">magic</span> <span class="hljs-operator">=</span> byteBuf.readShort();<br>        <span class="hljs-keyword">if</span> (magic != <span class="hljs-number">19231</span>) &#123;<br>            ctx.close();<br>            <span class="hljs-keyword">return</span>;<br>        &#125;<br><br>        <span class="hljs-type">int</span> <span class="hljs-variable">len</span> <span class="hljs-operator">=</span> byteBuf.readInt();<br>        <span class="hljs-type">int</span> <span class="hljs-variable">code</span> <span class="hljs-operator">=</span> byteBuf.readInt();<br><br>        <span class="hljs-keyword">if</span> (byteBuf.readableBytes() &lt; len) &#123;<br>            byteBuf.resetReaderIndex(); <span class="hljs-comment">// 回滚，等待更多数据</span><br>            <span class="hljs-keyword">return</span>;<br>        &#125;<br><br>        <span class="hljs-type">byte</span>[] body = <span class="hljs-keyword">new</span> <span class="hljs-title class_">byte</span>[len];<br>        byteBuf.readBytes(body);<br><br>        <span class="hljs-type">ImMsg</span> <span class="hljs-variable">imMsg</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ImMsg</span>();<br>        imMsg.setMagic(magic);<br>        imMsg.setLen(len);<br>        imMsg.setCode(code);<br>        imMsg.setBody(body);<br>        out.add(imMsg);<br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ImMsgEncode</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">MessageToByteEncoder</span> &#123;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">encode</span><span class="hljs-params">(ChannelHandlerContext ctx, Object msg, ByteBuf out)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-type">ImMsg</span> <span class="hljs-variable">imMsg</span> <span class="hljs-operator">=</span> (ImMsg) msg;<br>        out.writeShort(imMsg.getMagic());<br>        out.writeInt(imMsg.getLen());<br>        out.writeInt(imMsg.getCode());<br>        out.writeBytes(imMsg.getBody());<br>    &#125;<br>&#125;<br><br><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="五、统一消息路由与处理（Handler-体系）"><a href="#五、统一消息路由与处理（Handler-体系）" class="headerlink" title="五、统一消息路由与处理（Handler 体系）"></a>五、统一消息路由与处理（Handler 体系）</h1><ul>
+<li>入站统一：<code>ImServerCoreHandler</code> 只接收 <code>ImMsg</code>，否则抛错，随后委派到工厂：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ImServerCoreHandler</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">SimpleChannelInboundHandler</span> &#123;<br>    <span class="hljs-comment">//处理消息的工厂</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-type">ImHandlerFactory</span> <span class="hljs-variable">imHandlerFactory</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ImHandlerFactoryImpl</span>();<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">channelRead0</span><span class="hljs-params">(ChannelHandlerContext ctx, Object msg)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-keyword">if</span>(!(msg <span class="hljs-keyword">instanceof</span> ImMsg))&#123;<br>            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Exception</span>(<span class="hljs-string">&quot;msg is not instance of ImMsg&quot;</span>);<br>        &#125;<br>        <span class="hljs-type">ImMsg</span> <span class="hljs-variable">imMsg</span> <span class="hljs-operator">=</span> (ImMsg) msg;<br>        imHandlerFactory.doMsgHandler(ctx, imMsg);<br><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>工厂路由：<code>ImHandlerFactoryImpl</code> 以 <code>Map&lt;Integer, SimplyHandler&gt;</code> 维护消息码与处理器映射，示例注册：<ul>
+<li>登录：<code>LoginMsgHandler</code></li>
+<li>登出：<code>LogoutMsgHandler</code></li>
+<li>心跳：<code>HearteatMsgHandler</code></li>
+<li>业务：<code>BizImMsgHandler</code></li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">SimplyHandler</span> &#123;<br>    <span class="hljs-keyword">void</span> <span class="hljs-title function_">handle</span><span class="hljs-params">(ChannelHandlerContext ctx, ImMsg msg)</span>;<br>&#125;<br><br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">BizImMsgHandler</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">SimplyHandler</span> &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">handle</span><span class="hljs-params">(ChannelHandlerContext ctx, ImMsg msg)</span> &#123;<br>        System.out.println(<span class="hljs-string">&quot;收到业务消息&quot;</span> + msg.toString());<br>        ctx.writeAndFlush(msg);<br>    &#125;<br>&#125;<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">HearteatMsgHandler</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">SimplyHandler</span> &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">handle</span><span class="hljs-params">(ChannelHandlerContext ctx, ImMsg msg)</span> &#123;<br>        System.out.println(<span class="hljs-string">&quot;收到心跳消息&quot;</span> + msg.toString());<br>        ctx.writeAndFlush(msg);<br>    &#125;<br>&#125;<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">LoginMsgHandler</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">SimplyHandler</span> &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">handle</span><span class="hljs-params">(ChannelHandlerContext ctx, ImMsg msg)</span> &#123;<br>        System.out.println(<span class="hljs-string">&quot;收到登入消息&quot;</span> + msg.toString());<br>        ctx.writeAndFlush(msg);<br>    &#125;<br>&#125;<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">LogoutMsgHandler</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">SimplyHandler</span> &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">handle</span><span class="hljs-params">(ChannelHandlerContext ctx, ImMsg msg)</span> &#123;<br>        System.out.println(<span class="hljs-string">&quot;收到登出消息&quot;</span> + msg.toString());<br>        ctx.writeAndFlush(msg);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+<ul>
+<li>处理器当前行为：打印收到的消息并 <code>ctx.writeAndFlush(msg)</code> 回显，便于联调。</li>
+<li>扩展建议：<ul>
+<li>登录：校验令牌、绑定 <code>channel &lt;-&gt; userId</code>、记录上线状态。</li>
+<li>心跳：更新会话最近活动时间、设置超时剔除策略。</li>
+<li>业务：根据 <code>code</code> 子类型或 <code>body</code> 路由到具体业务处理，支持单聊&#x2F;群聊。</li>
+<li>登出：解绑会话、释放资源、通知好友在线状态变化。</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">ImHandlerFactory</span> &#123;<br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 根据code获取对应的handler</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> channelContext</span><br><span class="hljs-comment">     * <span class="hljs-doctag">@param</span> imMsg</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">void</span> <span class="hljs-title function_">doMsgHandler</span><span class="hljs-params">(ChannelHandlerContext channelContext, ImMsg imMsg)</span>;<br>&#125;<br><br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ImHandlerFactoryImpl</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">ImHandlerFactory</span> &#123;<br>    <span class="hljs-comment">// 存放handler的map，key为消息码，value为handler</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> Map&lt;Integer, SimplyHandler&gt; handlerMap = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();<br><br>    <span class="hljs-keyword">static</span> &#123;<br>        <span class="hljs-comment">// 注册登入消息处理器</span><br>        handlerMap.put(ImMsgCodeEnum.IM_LOGIN_MSG.getCode(), <span class="hljs-keyword">new</span> <span class="hljs-title class_">LoginMsgHandler</span>());<br>        <span class="hljs-comment">// 注册登出消息处理器</span><br>        handlerMap.put(ImMsgCodeEnum.IM_LOGOUT_MSG.getCode(), <span class="hljs-keyword">new</span> <span class="hljs-title class_">LogoutMsgHandler</span>());<br>        <span class="hljs-comment">// 注册心跳消息处理器</span><br>        handlerMap.put(ImMsgCodeEnum.IM_HEARTBEAT_MSG.getCode(), <span class="hljs-keyword">new</span> <span class="hljs-title class_">HearteatMsgHandler</span>());<br>        <span class="hljs-comment">// 注册常规业务消息处理器</span><br>        handlerMap.put(ImMsgCodeEnum.IM_BIZ_MSG.getCode(), <span class="hljs-keyword">new</span> <span class="hljs-title class_">BizImMsgHandler</span>());<br>    &#125;<br><br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">doMsgHandler</span><span class="hljs-params">(ChannelHandlerContext channelContext, ImMsg imMsg)</span> &#123;<br>        <span class="hljs-comment">// 从map中获取handler</span><br>        <span class="hljs-type">SimplyHandler</span> <span class="hljs-variable">handler</span> <span class="hljs-operator">=</span> handlerMap.get(imMsg.getCode());<br>        <span class="hljs-keyword">if</span> (handler == <span class="hljs-literal">null</span>) &#123;<br>           <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">IllegalArgumentException</span>(<span class="hljs-string">&quot;未注册的消息码：&quot;</span> + imMsg.getCode());<br>        &#125;<br>        <span class="hljs-comment">// 调用handler的handle方法</span><br>        handler.handle(channelContext, imMsg);<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="六、与-Spring-Boot-的整合方式"><a href="#六、与-Spring-Boot-的整合方式" class="headerlink" title="六、与 Spring Boot 的整合方式"></a>六、与 Spring Boot 的整合方式</h1><ul>
+<li>当前模块定位：独立 Netty 进程（<code>main</code> 方法直接启动）。</li>
+<li>两种常见整合路径：<ul>
+<li>独立服务进程：与 Spring Boot Web 应用通过 HTTP&#x2F;WebSocket&#x2F;消息队列交互，IM 服务专注长连接与消息中转。</li>
+<li>Spring Bean 管理：将 <code>NettyImServerApplication</code> 作为 Bean 注入，在 <code>ApplicationRunner</code>&#x2F;<code>CommandLineRunner</code> 中启动，在 <code>@PreDestroy</code> 中优雅关闭。</li>
+</ul>
+</li>
+</ul>
+<p>示例（伪代码）：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Configuration</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ImServerConfig</span> &#123;<br>    <span class="hljs-meta">@Bean</span><br>    <span class="hljs-keyword">public</span> NettyImServerApplication <span class="hljs-title function_">imServer</span><span class="hljs-params">()</span> &#123; <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">NettyImServerApplication</span>(); &#125;<br><br>    <span class="hljs-meta">@Bean</span><br>    <span class="hljs-keyword">public</span> ApplicationRunner <span class="hljs-title function_">runner</span><span class="hljs-params">(NettyImServerApplication imServer)</span> &#123;<br>        <span class="hljs-keyword">return</span> args -&gt; imServer.startApplication(<span class="hljs-number">9090</span>);<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="七、客户端测试"><a href="#七、客户端测试" class="headerlink" title="七、客户端测试"></a>七、客户端测试</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ImClientApplication</span> &#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">startConnection</span><span class="hljs-params">(String ip, <span class="hljs-type">int</span> port)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-type">EventLoopGroup</span> <span class="hljs-variable">group</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">NioEventLoopGroup</span>();<br>        <span class="hljs-type">Bootstrap</span> <span class="hljs-variable">bootstrap</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Bootstrap</span>();<br>        bootstrap.group(group);<br>        bootstrap.channel(NioSocketChannel.class);<br>        bootstrap.handler(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ChannelInitializer</span>&lt;SocketChannel&gt;() &#123;<br>            <span class="hljs-meta">@Override</span><br>            <span class="hljs-keyword">protected</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">initChannel</span><span class="hljs-params">(SocketChannel ch)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>                System.out.println(<span class="hljs-string">&quot;初始化成功&quot;</span>);<br>                ch.pipeline().addLast(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ImMsgDecode</span>());<br>                ch.pipeline().addLast(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ImMsgEncode</span>());<br>                ch.pipeline().addLast(<span class="hljs-keyword">new</span> <span class="hljs-title class_">ClientHandler</span>());<br><br>            &#125;<br>        &#125;);<br>        <span class="hljs-type">ChannelFuture</span> <span class="hljs-variable">future</span> <span class="hljs-operator">=</span> bootstrap.connect(ip, port).sync();<br>        <span class="hljs-comment">// 等待连接成功</span><br>        <span class="hljs-type">Channel</span> <span class="hljs-variable">channel</span> <span class="hljs-operator">=</span> future.channel();<br>        <span class="hljs-keyword">for</span>(<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">10</span>; i++)&#123;<br>            channel.writeAndFlush(ImMsg.build(ImMsgCodeEnum.IM_LOGIN_MSG.getCode(), <span class="hljs-string">&quot;login&quot;</span>));<br>            channel.writeAndFlush(ImMsg.build(ImMsgCodeEnum.IM_BIZ_MSG.getCode(), <span class="hljs-string">&quot;biz&quot;</span>));<br>            channel.writeAndFlush(ImMsg.build(ImMsgCodeEnum.IM_HEARTBEAT_MSG.getCode(), <span class="hljs-string">&quot;heartbeat&quot;</span>));<br>            channel.writeAndFlush(ImMsg.build(ImMsgCodeEnum.IM_LOGOUT_MSG.getCode(), <span class="hljs-string">&quot;logout&quot;</span>));<br>            Thread.sleep(<span class="hljs-number">3000</span>);<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-type">ImClientApplication</span> <span class="hljs-variable">client</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">ImClientApplication</span>();<br>        client.startConnection(<span class="hljs-string">&quot;localhost&quot;</span>,<span class="hljs-number">9090</span>);<br>    &#125;<br>&#125;<br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">ClientHandler</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">ChannelInboundHandlerAdapter</span> &#123;<br>    <span class="hljs-meta">@Override</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">channelRead</span><span class="hljs-params">(ChannelHandlerContext ctx, Object msg)</span> <span class="hljs-keyword">throws</span> Exception &#123;<br>        <span class="hljs-type">ImMsg</span> <span class="hljs-variable">imMsg</span> <span class="hljs-operator">=</span> (ImMsg) msg;<br>        System.out.println(<span class="hljs-string">&quot;[服务端响应] message: &quot;</span> + imMsg);<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+
+<hr>
+<h1 id="八、运行与联调建议"><a href="#八、运行与联调建议" class="headerlink" title="八、运行与联调建议"></a>八、运行与联调建议</h1><ul>
+<li><p>本地启动：直接运行 <code>NettyImServerApplication.main</code>，默认端口 <code>9090</code>。可通过 VM 参数配置端口。</p>
+</li>
+<li><p>客户端联调：自定义二进制协议，建议使用 Netty 客户端发送 <code>ImMsg.build(code, json)</code> 测试。</p>
+</li>
+<li><p>消息码定义：依赖 <code>ImMsgCodeEnum</code>（位于 <code>interfaces</code> 模块），保持服务端与客户端统一。</p>
+</li>
+<li><p>日志观察：关注连接初始化日志与各 Handler 打印，便于定位协议与路由问题。</p>
+</li>
+</ul>
+<hr>
+<h1 id="九、后续规划与优化点"><a href="#九、后续规划与优化点" class="headerlink" title="九、后续规划与优化点"></a>九、后续规划与优化点</h1><ul>
+<li>会话管理：支持多端登录、设备标识绑定、在线状态同步。</li>
+<li>心跳与超时：空闲检测与踢出策略、动态心跳周期。</li>
+<li>鉴权与安全：接入令牌校验、签名验真、限流与防刷。</li>
+<li>消息可靠：落库与离线消息、ACK 机制、重试策略。</li>
+<li>可观测性：接入指标与追踪，压力测试与容量规划。</li>
+<li>集群能力：多节点部署、连接迁移、消息广播与一致性。</li>
+</ul>
+<hr>
+<blockquote>
+<p> 作者：NowPion<br> 用代码驱动业务，让通信更稳定、更可观测。</p>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/" class="category-chain-item">技术分享</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Spring-Boot/" class="print-no-link">#Spring Boot</a>
+      
+        <a href="/tags/Im%E7%B3%BB%E7%BB%9F/" class="print-no-link">#Im系统</a>
+      
+        <a href="/tags/Netty%E6%A1%86%E6%9E%B6/" class="print-no-link">#Netty框架</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Spring Boot 整合Netty框架</div>
+      <div>https://blog.newpon.top/2025/11/04/SpringBoot整合Netty框架/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>John Doe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年11月4日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/11/01/%E9%A1%B5%E9%9D%A2%E5%88%B7%E6%96%B0%E5%90%8Ecookie%E6%B6%88%E5%A4%B1%E7%9A%84bug/" title="页面刷新后cookie消失的bug">
+                        <span class="hidden-mobile">页面刷新后cookie消失的bug</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'NowPion/NowPion.github.io');
+      s.setAttribute('issue-term', 'title');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
