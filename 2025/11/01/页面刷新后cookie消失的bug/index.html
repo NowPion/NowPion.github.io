@@ -26,16 +26,16 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="问题发现今天在用 Cookie 做登录态时遇到一个诡异问题：刷新页面后，Cookie 自动消失；并且再次发起请求也不携带 Cookie。  复现123456789101112export const userApi &#x3D; &#123;  &#x2F;&#x2F; 发送登录验证码  sendLoginCode(phone) &#123;    return api.postForm(&#x27;&#x2F;userLogin&#x2F;se">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://newpon.top/PicGo/image-20251101171555217.png">
-<meta property="og:image" content="https://newpon.top/PicGo/image-20251101172152297.png">
+<meta property="og:image" content="https://pub-a57df07920d249cb9197910fe28b84a5.r2.dev/PicGo/image-20251101171555217.png">
+<meta property="og:image" content="https://pub-a57df07920d249cb9197910fe28b84a5.r2.dev/PicGo/image-20251101171555217.png">
 <meta property="article:published_time" content="2025-11-01T07:14:34.000Z">
-<meta property="article:modified_time" content="2025-11-01T09:29:14.460Z">
+<meta property="article:modified_time" content="2025-12-01T08:08:08.163Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="前端">
 <meta property="article:tag" content="Cookie">
 <meta property="article:tag" content="CORS">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://newpon.top/PicGo/image-20251101171555217.png">
+<meta name="twitter:image" content="https://pub-a57df07920d249cb9197910fe28b84a5.r2.dev/PicGo/image-20251101171555217.png">
   
   
   
@@ -287,13 +287,13 @@
 
 
 
-<p><img src="https://newpon.top/PicGo/image-20251101171555217.png" srcset="/img/loading.gif" lazyload alt="image-20251101171555217"></p>
+<p><img src="https://pub-a57df07920d249cb9197910fe28b84a5.r2.dev/PicGo/image-20251101171555217.png" srcset="/img/loading.gif" lazyload alt="image-20251101171555217"> </p>
 <figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs asciidoc">现象：<br><span class="hljs-bullet">- </span>发送新的请求并不会携带 Cookie<br><span class="hljs-bullet">- </span>页面刷新后 Cookie 就会消失<br></code></pre></td></tr></table></figure>
 
 
 
 <hr>
-<h2 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h2><p><img src="https://newpon.top/PicGo/image-20251101172152297.png" srcset="/img/loading.gif" lazyload alt="image-20251101172152297"></p>
+<h2 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h2><p><img src="https://pub-a57df07920d249cb9197910fe28b84a5.r2.dev/PicGo/image-20251101171555217.png" srcset="/img/loading.gif" lazyload alt="image-20251101172152297"></p>
 <p>浏览器为了提高安全性，要求所有设置了 <code>SameSite=None</code> 的 cookies 都必须使用 <code>Secure</code> 属性，以确保它们仅通过 HTTPS 发送，防止中间人攻击和其他安全漏洞</p>
 <p>进一步说明：</p>
 <ul>

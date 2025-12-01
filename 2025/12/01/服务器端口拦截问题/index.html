@@ -19,24 +19,27 @@
   <meta name="author" content="John Doe">
   <meta name="keywords" content="">
   
-    <meta name="description" content="一、前言在高并发系统中，为了防止接口被恶意频繁访问、刷接口或突发流量导致系统崩溃，我们需要 限流（Rate Limiting）。本文将介绍如何通过 Redis + AOP 在 Spring Boot 项目中实现轻量级、可复用的接口限流功能。 相比使用 Guava 或令牌桶算法的单机实现，Redis 版本支持 分布式限流，非常适合多实例部署场景。  二、Maven 依赖12345&lt;depen">
+    <meta name="description" content="问题发现早上检查服务器时发现他妈的数据库被黑了，排查后才想起防火墙端口忘记关闭。立即登录服务器关闭了防火墙对应端口 但远程测试时发现：端口居然还能连上！  问题原因 我的数据库服务是通过 Docker 启动的，这正是问题的根源。 Docker 默认把所有转发到容器的流量全部放行，无条件 ACCEPT Docker 的 iptables 行为Docker 默认会在系统 iptables 中自动添加">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Redis + AOP 实现的接口限流">
-<meta property="og:url" content="https://blog.newpon.top/2025/11/12/Redis%20+%20AOP%20%E5%AE%9E%E7%8E%B0%E7%9A%84%E6%8E%A5%E5%8F%A3%E9%99%90%E6%B5%81/index.html">
+<meta property="og:title" content="Docker 绕过防火墙的端口映射问题">
+<meta property="og:url" content="https://blog.newpon.top/2025/12/01/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E5%8F%A3%E6%8B%A6%E6%88%AA%E9%97%AE%E9%A2%98/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="一、前言在高并发系统中，为了防止接口被恶意频繁访问、刷接口或突发流量导致系统崩溃，我们需要 限流（Rate Limiting）。本文将介绍如何通过 Redis + AOP 在 Spring Boot 项目中实现轻量级、可复用的接口限流功能。 相比使用 Guava 或令牌桶算法的单机实现，Redis 版本支持 分布式限流，非常适合多实例部署场景。  二、Maven 依赖12345&lt;depen">
+<meta property="og:description" content="问题发现早上检查服务器时发现他妈的数据库被黑了，排查后才想起防火墙端口忘记关闭。立即登录服务器关闭了防火墙对应端口 但远程测试时发现：端口居然还能连上！  问题原因 我的数据库服务是通过 Docker 启动的，这正是问题的根源。 Docker 默认把所有转发到容器的流量全部放行，无条件 ACCEPT Docker 的 iptables 行为Docker 默认会在系统 iptables 中自动添加">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2025-11-12T12:08:55.000Z">
-<meta property="article:modified_time" content="2025-11-12T12:44:45.176Z">
+<meta property="og:image" content="https://pub-a57df07920d249cb9197910fe28b84a5.r2.dev/PicGo/f90c22081df0e564dc0abecf99e3002a.png">
+<meta property="article:published_time" content="2025-12-01T07:14:34.000Z">
+<meta property="article:modified_time" content="2025-12-01T08:41:41.099Z">
 <meta property="article:author" content="John Doe">
-<meta property="article:tag" content="Spring Boot">
-<meta property="article:tag" content="Redis">
-<meta property="article:tag" content="AOP">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="运维">
+<meta property="article:tag" content="安全">
+<meta property="article:tag" content="iptables">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://pub-a57df07920d249cb9197910fe28b84a5.r2.dev/PicGo/f90c22081df0e564dc0abecf99e3002a.png">
   
   
   
-  <title>Redis + AOP 实现的接口限流 - Hexo</title>
+  <title>Docker 绕过防火墙的端口映射问题 - Hexo</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -202,7 +205,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Redis + AOP 实现的接口限流"></span>
+            <span id="subtitle" data-typed-text="Docker 绕过防火墙的端口映射问题"></span>
           
         </div>
 
@@ -213,8 +216,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2025-11-12 20:08" pubdate>
-          2025年11月12日 晚上
+        <time datetime="2025-12-01 15:14" pubdate>
+          2025年12月1日 下午
         </time>
       </span>
     
@@ -225,7 +228,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          657 字
+          682 字
         
       </span>
     
@@ -273,40 +276,86 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Redis + AOP 实现的接口限流</h1>
+            <h1 id="seo-header">Docker 绕过防火墙的端口映射问题</h1>
             
             
               <div class="markdown-body">
                 
-                <hr>
-<h1 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h1><p>在高并发系统中，为了防止接口被恶意频繁访问、刷接口或突发流量导致系统崩溃，我们需要 <strong>限流（Rate Limiting）</strong>。本文将介绍如何通过 <strong>Redis + AOP</strong> 在 Spring Boot 项目中实现轻量级、可复用的接口限流功能。</p>
-<p>相比使用 Guava 或令牌桶算法的单机实现，Redis 版本支持 <strong>分布式限流</strong>，非常适合多实例部署场景。</p>
+                <h2 id="问题发现"><a href="#问题发现" class="headerlink" title="问题发现"></a>问题发现</h2><p>早上检查服务器时发现他妈的数据库被黑了，排查后才想起防火墙端口忘记关闭。立即登录服务器关闭了防火墙对应端口</p>
+<p>但远程测试时发现：<strong>端口居然还能连上！</strong></p>
 <hr>
-<h1 id="二、Maven-依赖"><a href="#二、Maven-依赖" class="headerlink" title="二、Maven 依赖"></a>二、Maven 依赖</h1><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-data-redis<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><br></code></pre></td></tr></table></figure>
+<h2 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h2><p><img src="https://pub-a57df07920d249cb9197910fe28b84a5.r2.dev/PicGo/f90c22081df0e564dc0abecf99e3002a.png" srcset="/img/loading.gif" lazyload alt="Docker 网络流量示意图"></p>
+<p>我的数据库服务是通过 Docker 启动的，这正是问题的根源。</p>
+<p>Docker 默认把所有转发到容器的流量全部放行，无条件 ACCEPT</p>
+<h3 id="Docker-的-iptables-行为"><a href="#Docker-的-iptables-行为" class="headerlink" title="Docker 的 iptables 行为"></a>Docker 的 iptables 行为</h3><p>Docker 默认会在系统 iptables 中自动添加 NAT&#x2F;FORWARD 规则，将映射端口直接放行。外部流量会绕过 INPUT 链，因此即使防火墙（UFW）没有开放端口，也能访问容器服务。</p>
+<p>当 Docker 启动容器并映射端口（如 <code>-p 3307:3306</code>）时，会自动执行以下操作：</p>
+<ol>
+<li>在 NAT 表的 <code>PREROUTING</code> 链添加 DNAT 规则，将宿主机端口转发到容器端口</li>
+<li>在 <code>FORWARD</code> 链添加 ACCEPT 规则，放行转发流量</li>
+</ol>
+<h3 id="流量路径分析"><a href="#流量路径分析" class="headerlink" title="流量路径分析"></a>流量路径分析</h3><p>UFW 规则作用于 <code>filter/INPUT</code> 链，而外部访问 Docker 映射端口时，流量走的是：</p>
+<figure class="highlight delphi"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs delphi">外网 → PREROUTING (DNAT) → <span class="hljs-keyword">FORWARD</span> → 容器<br></code></pre></td></tr></table></figure>
 
+<p>由于流量不经过 INPUT 链，所以即使 UFW 禁止了端口，Docker 映射的端口仍然可以被外部访问。</p>
 <hr>
-<h1 id="三、自定义注解"><a href="#三、自定义注解" class="headerlink" title="三、自定义注解"></a>三、自定义注解</h1><p>通过注解来灵活定义接口限流的规则，例如访问时间窗口与次数。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs java"><br><span class="hljs-meta">@Target(ElementType.METHOD)</span><br><span class="hljs-meta">@Retention(RetentionPolicy.RUNTIME)</span><br><span class="hljs-keyword">public</span> <span class="hljs-meta">@interface</span> CurrentLimiting &#123;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * Redis 缓存 key 前缀</span><br><span class="hljs-comment">     */</span><br>    String <span class="hljs-title function_">key</span><span class="hljs-params">()</span> <span class="hljs-keyword">default</span> <span class="hljs-string">&quot;apiVisits:&quot;</span>;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 限流时间窗口（单位：秒）</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-type">int</span> <span class="hljs-title function_">time</span><span class="hljs-params">()</span> <span class="hljs-keyword">default</span> <span class="hljs-number">5</span>;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 时间窗口内允许的最大访问次数</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-type">int</span> <span class="hljs-title function_">count</span><span class="hljs-params">()</span> <span class="hljs-keyword">default</span> <span class="hljs-number">10</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><h3 id="方案一：禁止-Docker-自动管理-iptables（推荐）"><a href="#方案一：禁止-Docker-自动管理-iptables（推荐）" class="headerlink" title="方案一：禁止 Docker 自动管理 iptables（推荐）"></a>方案一：禁止 Docker 自动管理 iptables（推荐）</h3><p>编辑 Docker 配置文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> vim /etc/docker/daemon.json<br></code></pre></td></tr></table></figure>
 
-<hr>
-<h1 id="四、AOP-切面实现"><a href="#四、AOP-切面实现" class="headerlink" title="四、AOP 切面实现"></a>四、AOP 切面实现</h1><p>利用 AOP 在接口调用前拦截请求，并基于 Redis 的 <strong>ZSet（有序集合）</strong> 实现滑动时间窗口限流。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Slf4j</span><br><span class="hljs-meta">@Aspect</span><br><span class="hljs-meta">@Component</span><br><span class="hljs-meta">@RequiredArgsConstructor</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CurrentLimitingAspect</span> &#123;<br><br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">final</span> RedisTemplate&lt;String, Object&gt; redisTemplate;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 拦截带有 <span class="hljs-doctag">@CurrentLimiting</span> 注解的方法</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-meta">@Before(&quot;@annotation(currentLimiting)&quot;)</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">doBefore</span><span class="hljs-params">(JoinPoint point, CurrentLimiting currentLimiting)</span> <span class="hljs-keyword">throws</span> Throwable &#123;<br>        <span class="hljs-type">int</span> <span class="hljs-variable">time</span> <span class="hljs-operator">=</span> currentLimiting.time();<br>        <span class="hljs-type">int</span> <span class="hljs-variable">count</span> <span class="hljs-operator">=</span> currentLimiting.count();<br><br>        <span class="hljs-comment">// 构建 Redis Key</span><br>        <span class="hljs-type">String</span> <span class="hljs-variable">key</span> <span class="hljs-operator">=</span> getCurrentLimitingKey(currentLimiting.key(), point);<br><br>        <span class="hljs-comment">// 使用 ZSet 存储每次访问时间戳</span><br>        ZSetOperations&lt;String, Object&gt; zSetOps = redisTemplate.opsForZSet();<br>        <span class="hljs-type">long</span> <span class="hljs-variable">currentTime</span> <span class="hljs-operator">=</span> System.currentTimeMillis();<br><br>        zSetOps.add(key, currentTime, currentTime);<br>        redisTemplate.expire(key, time, TimeUnit.SECONDS);<br><br>        <span class="hljs-comment">// 删除窗口外的记录</span><br>        zSetOps.removeRangeByScore(key, <span class="hljs-number">0</span>, currentTime - time * <span class="hljs-number">1000</span>);<br><br>        <span class="hljs-comment">// 统计当前时间窗口内访问次数</span><br>        <span class="hljs-type">Long</span> <span class="hljs-variable">currentCount</span> <span class="hljs-operator">=</span> zSetOps.zCard(key);<br><br>        <span class="hljs-keyword">if</span> (currentCount != <span class="hljs-literal">null</span> &amp;&amp; currentCount &gt; count) &#123;<br>            log.warn(<span class="hljs-string">&quot;接口限流触发 -&gt; key:&#123;&#125;, count:&#123;&#125;, currentCount:&#123;&#125;&quot;</span>, key, count, currentCount);<br>            <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">RuntimeException</span>(<span class="hljs-string">&quot;访问过于频繁，请稍后再试!&quot;</span>);<br>        &#125;<br>    &#125;<br><br>    <span class="hljs-comment">/**</span><br><span class="hljs-comment">     * 拼接 Redis key：前缀 + 用户IP + 类名 + 方法名</span><br><span class="hljs-comment">     */</span><br>    <span class="hljs-keyword">private</span> String <span class="hljs-title function_">getCurrentLimitingKey</span><span class="hljs-params">(String prefixKey, JoinPoint point)</span> &#123;<br>        <span class="hljs-type">StringBuilder</span> <span class="hljs-variable">sb</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">StringBuilder</span>(prefixKey);<br><br>        <span class="hljs-type">ServletRequestAttributes</span> <span class="hljs-variable">attributes</span> <span class="hljs-operator">=</span> (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();<br>        <span class="hljs-type">HttpServletRequest</span> <span class="hljs-variable">request</span> <span class="hljs-operator">=</span> attributes.getRequest();<br><br>        <span class="hljs-type">String</span> <span class="hljs-variable">ip</span> <span class="hljs-operator">=</span> request.getRemoteAddr(); <span class="hljs-comment">// 可替换为自定义 IpUtil</span><br>        <span class="hljs-type">MethodSignature</span> <span class="hljs-variable">signature</span> <span class="hljs-operator">=</span> (MethodSignature) point.getSignature();<br>        <span class="hljs-type">Method</span> <span class="hljs-variable">method</span> <span class="hljs-operator">=</span> signature.getMethod();<br>        Class&lt;?&gt; targetClass = method.getDeclaringClass();<br><br>        <span class="hljs-keyword">return</span> sb.append(ip)<br>                .append(<span class="hljs-string">&quot;:&quot;</span>)<br>                .append(targetClass.getName())<br>                .append(<span class="hljs-string">&quot;:&quot;</span>)<br>                .append(method.getName())<br>                .toString();<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>添加以下内容：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;iptables&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
 
-<hr>
-<h1 id="五、注解使用示例"><a href="#五、注解使用示例" class="headerlink" title="五、注解使用示例"></a>五、注解使用示例</h1><p>在控制器方法上直接使用 <code>@CurrentLimiting</code> 注解即可，灵活控制不同接口的限流策略。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">import</span> org.springframework.web.bind.annotation.GetMapping;<br><span class="hljs-keyword">import</span> org.springframework.web.bind.annotation.RestController;<br><br><span class="hljs-meta">@RestController</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">DemoController</span> &#123;<br><br>    <span class="hljs-meta">@GetMapping(&quot;/hello&quot;)</span><br>    <span class="hljs-meta">@CurrentLimiting(time = 5, count = 2)</span><br>    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">hello</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;Hello, World!&quot;</span>;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>重启 Docker 服务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> systemctl restart docker<br></code></pre></td></tr></table></figure>
 
-<p>运行后，访问 <code>/hello</code> 接口 5 秒内超过 2 次，将触发异常：</p>
-<figure class="highlight erlang-repl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs erlang-repl">访问过于频繁，请稍后再试!<br></code></pre></td></tr></table></figure>
-
-<hr>
-<h1 id="六、总结"><a href="#六、总结" class="headerlink" title="六、总结"></a>六、总结</h1><p> 使用 Redis ZSet 实现滑动窗口算法，统计当前时间段内访问次数。</p>
-<p> AOP 拦截 + 自定义注解，使限流逻辑与业务逻辑完全解耦。</p>
-<p> 可轻松扩展至分布式系统，配合 Lua 脚本可实现原子操作。</p>
-<hr>
+<p>这样防火墙（UFW、iptables）就能真正掌控端口访问，Docker 不再绕过 INPUT 链。</p>
 <blockquote>
-<p> 作者：NowPion  </p>
+<p>⚠️ <strong>注意</strong>：禁用后需要手动配置容器网络的 NAT 规则，容器间通信和外部访问都需要自行管理。</p>
 </blockquote>
+<h3 id="方案二：使用-UFW-Docker-插件"><a href="#方案二：使用-UFW-Docker-插件" class="headerlink" title="方案二：使用 UFW-Docker 插件"></a>方案二：使用 UFW-Docker 插件</h3><p>安装 ufw-docker 脚本，让 UFW 能正确管理 Docker 端口：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> wget -O /usr/local/bin/ufw-docker \<br>  https://github.com/chaifeng/ufw-docker/raw/master/ufw-docker<br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">chmod</span> +x /usr/local/bin/ufw-docker<br><span class="hljs-built_in">sudo</span> ufw-docker install<br><span class="hljs-built_in">sudo</span> systemctl restart ufw<br></code></pre></td></tr></table></figure>
+
+<p>允许特定 IP 访问容器端口：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> ufw-docker allow mysql 3306/tcp 192.168.1.100<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="常见坑排查清单"><a href="#常见坑排查清单" class="headerlink" title="常见坑排查清单"></a>常见坑排查清单</h2><table>
+<thead>
+<tr>
+<th>问题现象</th>
+<th>可能原因</th>
+<th>排查命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>防火墙关了端口还能访问</td>
+<td>Docker 绑定了 iptables</td>
+<td><code>iptables -t nat -L -n</code></td>
+</tr>
+<tr>
+<td>容器无法访问外网</td>
+<td>禁用 iptables 后未配置 NAT</td>
+<td><code>iptables -t nat -A POSTROUTING -s 172.17.0.0/16 -j MASQUERADE</code></td>
+</tr>
+<tr>
+<td>容器间无法通信</td>
+<td>网络模式或 FORWARD 链问题</td>
+<td><code>docker network ls</code></td>
+</tr>
+<tr>
+<td>UFW 状态显示正常但不生效</td>
+<td>Docker 规则优先级更高</td>
+<td><code>iptables -L DOCKER-USER -n</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Docker 默认的 iptables 管理机制虽然方便，但会绕过系统防火墙，带来安全隐患。生产环境建议：</p>
+<ol>
+<li><strong>敏感服务不要直接映射到公网</strong>，使用 <code>127.0.0.1</code> 绑定</li>
+<li><strong>配置 <code>iptables: false</code></strong> 或使用 ufw-docker 插件</li>
+<li><strong>定期检查 iptables 规则</strong>：<code>iptables -L -n</code> 和 <code>iptables -t nat -L -n</code></li>
+<li><strong>数据库等关键服务设置强密码</strong>，并限制访问 IP</li>
+</ol>
+<p>安全无小事，别等被黑了才想起来补救。</p>
 
                 
               </div>
@@ -340,11 +389,13 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/Spring-Boot/" class="print-no-link">#Spring Boot</a>
+        <a href="/tags/Docker/" class="print-no-link">#Docker</a>
       
-        <a href="/tags/Redis/" class="print-no-link">#Redis</a>
+        <a href="/tags/%E8%BF%90%E7%BB%B4/" class="print-no-link">#运维</a>
       
-        <a href="/tags/AOP/" class="print-no-link">#AOP</a>
+        <a href="/tags/%E5%AE%89%E5%85%A8/" class="print-no-link">#安全</a>
+      
+        <a href="/tags/iptables/" class="print-no-link">#iptables</a>
       
     </div>
   
@@ -356,8 +407,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Redis + AOP 实现的接口限流</div>
-      <div>https://blog.newpon.top/2025/11/12/Redis + AOP 实现的接口限流/</div>
+      <div>Docker 绕过防火墙的端口映射问题</div>
+      <div>https://blog.newpon.top/2025/12/01/服务器端口拦截问题/</div>
     </div>
     <div class="license-meta">
       
@@ -369,7 +420,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2025年11月12日</div>
+          <div>2025年12月1日</div>
         </div>
       
       
@@ -401,18 +452,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/12/01/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E5%8F%A3%E6%8B%A6%E6%88%AA%E9%97%AE%E9%A2%98/" title="Docker 绕过防火墙的端口映射问题">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Docker 绕过防火墙的端口映射问题</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2025/11/08/SpringBoot%E6%95%B4%E5%90%88MQ/" title="Spring Boot 整合MQ">
-                        <span class="hidden-mobile">Spring Boot 整合MQ</span>
+                      <a href="/2025/11/12/Redis%20+%20AOP%20%E5%AE%9E%E7%8E%B0%E7%9A%84%E6%8E%A5%E5%8F%A3%E9%99%90%E6%B5%81/" title="Redis + AOP 实现的接口限流">
+                        <span class="hidden-mobile">Redis + AOP 实现的接口限流</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
