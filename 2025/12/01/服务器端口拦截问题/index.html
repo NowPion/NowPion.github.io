@@ -23,7 +23,7 @@
 <meta property="og:type" content="article">
 <meta property="og:title" content="Docker 绕过防火墙的端口映射问题">
 <meta property="og:url" content="https://blog.newpon.top/2025/12/01/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E5%8F%A3%E6%8B%A6%E6%88%AA%E9%97%AE%E9%A2%98/index.html">
-<meta property="og:site_name" content="Hexo">
+<meta property="og:site_name" content="Niezidong">
 <meta property="og:description" content="问题发现早上检查服务器时发现他妈的数据库被黑了，排查后才想起防火墙端口忘记关闭。立即登录服务器关闭了防火墙对应端口 但远程测试时发现：端口居然还能连上！  问题原因 我的数据库服务是通过 Docker 启动的，这正是问题的根源。 Docker 默认把所有转发到容器的流量全部放行，无条件 ACCEPT Docker 的 iptables 行为Docker 默认会在系统 iptables 中自动添加">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://pub-a57df07920d249cb9197910fe28b84a5.r2.dev/PicGo/f90c22081df0e564dc0abecf99e3002a.png">
@@ -42,7 +42,7 @@
     <meta name="google-site-verification" content="N6JBgzH9rNGetuGGxkXkXt_gjaEFrHZIuOPfWQck1EI" />
 
   
-  <title>Docker 绕过防火墙的端口映射问题 - Hexo</title>
+  <title>Docker 绕过防火墙的端口映射问题 - Niezidong</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
