@@ -1,0 +1,881 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="John Doe">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="SIP 软电话实现：从协议到全栈落地本文基于我实际落地的一套 SIP 软电话系统（Flutter 安卓 App + Go API + FreeSWITCH + MySQL + Caddy），先讲清楚 SIP 协议本身是什么，再拆解整个项目的架构、关键链路与踩坑记录。所有内容均来自真实可运行的服务器部署，而非纸上谈兵。   项目源码：github.com&#x2F;NowPion&#x2F;SIP_">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SIP软电话实现">
+<meta property="og:url" content="https://blog.newpon.top/2026/08/29/sip%E8%BD%AF%E7%94%B5%E8%AF%9D%E5%AE%9E%E7%8E%B0/index.html">
+<meta property="og:site_name" content="Niezidong">
+<meta property="og:description" content="SIP 软电话实现：从协议到全栈落地本文基于我实际落地的一套 SIP 软电话系统（Flutter 安卓 App + Go API + FreeSWITCH + MySQL + Caddy），先讲清楚 SIP 协议本身是什么，再拆解整个项目的架构、关键链路与踩坑记录。所有内容均来自真实可运行的服务器部署，而非纸上谈兵。   项目源码：github.com&#x2F;NowPion&#x2F;SIP_">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pub-7843c36ae8c74acbb64998494a352f61.r2.dev/picgo/20260830142104832.png">
+<meta property="og:image" content="https://pub-7843c36ae8c74acbb64998494a352f61.r2.dev/picgo/20260830143737870.png">
+<meta property="article:published_time" content="2026-08-29T12:30:00.000Z">
+<meta property="article:modified_time" content="2026-08-30T06:38:35.592Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="SIP">
+<meta property="article:tag" content="FreeSWITCH">
+<meta property="article:tag" content="Flutter">
+<meta property="article:tag" content="Go">
+<meta property="article:tag" content="WebRTC">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://pub-7843c36ae8c74acbb64998494a352f61.r2.dev/picgo/20260830142104832.png">
+  
+  
+  
+    <meta name="google-site-verification" content="N6JBgzH9rNGetuGGxkXkXt_gjaEFrHZIuOPfWQck1EI" />
+
+  
+  <title>SIP软电话实现 - Niezidong</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.newpon.top","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>NieBlong</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="SIP软电话实现"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-08-29 20:30" pubdate>
+          2026年8月29日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          13 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">SIP软电话实现</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="SIP-软电话实现：从协议到全栈落地"><a href="#SIP-软电话实现：从协议到全栈落地" class="headerlink" title="SIP 软电话实现：从协议到全栈落地"></a>SIP 软电话实现：从协议到全栈落地</h1><p>本文基于我实际落地的一套 SIP 软电话系统（Flutter 安卓 App + Go API + FreeSWITCH + MySQL + Caddy），先讲清楚 <strong>SIP 协议本身是什么</strong>，再拆解整个项目的架构、关键链路与踩坑记录。所有内容均来自真实可运行的服务器部署，而非纸上谈兵。</p>
+<blockquote>
+<p> 项目源码：<a target="_blank" rel="noopener" href="https://github.com/NowPion/SIP_terminal">github.com&#x2F;NowPion&#x2F;SIP_terminal</a></p>
+</blockquote>
+<hr>
+<h2 id="一、什么是-SIP"><a href="#一、什么是-SIP" class="headerlink" title="一、什么是 SIP"></a>一、什么是 SIP</h2><div style="display:flex;gap:24px;justify-content:center;margin:20px 0">
+  <img src="https://pub-7843c36ae8c74acbb64998494a352f61.r2.dev/picgo/20260830142104832.png" srcset="/img/loading.gif" lazyload width="260" alt="通话界面" />
+  <img src="https://pub-7843c36ae8c74acbb64998494a352f61.r2.dev/picgo/20260830143737870.png" srcset="/img/loading.gif" lazyload width="260" alt="账号管理" />
+</div>
+
+<p>SIP（Session Initiation Protocol，RFC 3261）是一个<strong>应用层信令协议</strong>，只负责”建立、修改、终止会话”，本身不传输语音。可以把它理解为电话世界的”HTTP”——文本协议、请求&#x2F;响应模型、状态码语义都高度相似。</p>
+<h3 id="1-1-请求方法"><a href="#1-1-请求方法" class="headerlink" title="1.1 请求方法"></a>1.1 请求方法</h3><table>
+<thead>
+<tr>
+<th>方法</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>REGISTER</td>
+<td>注册当前位置（软电话上线）</td>
+</tr>
+<tr>
+<td>INVITE</td>
+<td>发起呼叫</td>
+</tr>
+<tr>
+<td>ACK</td>
+<td>确认最终响应</td>
+</tr>
+<tr>
+<td>BYE</td>
+<td>挂断</td>
+</tr>
+<tr>
+<td>CANCEL</td>
+<td>取消未应答的呼叫</td>
+</tr>
+<tr>
+<td>UPDATE&#x2F;INFO</td>
+<td>会话中透传信息</td>
+</tr>
+</tbody></table>
+<h3 id="1-2-响应码"><a href="#1-2-响应码" class="headerlink" title="1.2 响应码"></a>1.2 响应码</h3><table>
+<thead>
+<tr>
+<th>类别</th>
+<th>含义</th>
+<th>常见</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1xx</td>
+<td>临时响应</td>
+<td>100 Trying、180 Ringing（振铃）、183 进展</td>
+</tr>
+<tr>
+<td>2xx</td>
+<td>成功</td>
+<td>200 OK</td>
+</tr>
+<tr>
+<td>3xx</td>
+<td>重定向</td>
+<td>302</td>
+</tr>
+<tr>
+<td>4xx</td>
+<td>客户端失败</td>
+<td>401 Unauthorized（发起摘要认证挑战）、403、486 Busy</td>
+</tr>
+<tr>
+<td>5xx&#x2F;6xx</td>
+<td>服务端&#x2F;全局失败</td>
+<td>503、603 Decline</td>
+</tr>
+</tbody></table>
+<p>注意 <strong>401 不是错误</strong>：SIP 的注册认证就是”客户端先 REGISTER → 服务器回 401 携带 nonce → 客户端带上 MD5 摘要重发 → 200 OK”，与 HTTP Digest 同源。</p>
+<h3 id="1-3-信令与媒体分离"><a href="#1-3-信令与媒体分离" class="headerlink" title="1.3 信令与媒体分离"></a>1.3 信令与媒体分离</h3><ul>
+<li><strong>信令</strong>：SIP 报文（文本），走 UDP&#x2F;TCP，或 WebSocket（WS&#x2F;WSS）</li>
+<li><strong>媒体</strong>：语音由 <strong>RTP</strong>（实时传输协议）承载，端口、编解码等参数通过 <strong>SDP</strong>（随 INVITE&#x2F;200 OK 的正文）协商</li>
+<li>软电话场景常用 <strong>WebRTC</strong> 做媒体层：DTLS-SRTP 加密、ICE 打洞、回声消除都白送，浏览器和移动端支持完善</li>
+</ul>
+<hr>
+<h2 id="二、系统总体架构"><a href="#二、系统总体架构" class="headerlink" title="二、系统总体架构"></a>二、系统总体架构</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java">┌─────────────┐  SIP信令(WSS) + RTP媒体(WebRTC)   ┌──────────────┐<br>│ Flutter App │◄─────────────────────────────────►│  FreeSWITCH  │<br>│  (Android)  │                                    │   (Docker)   │<br>└──────┬──────┘                                    └──────▲───────┘<br>       │ HTTPS <span class="hljs-title function_">REST</span> <span class="hljs-params">(JSON)</span>                                │ mod_xml_curl<br>       ▼                                                  │ 动态查分机目录<br>┌────────────────┐   同一 docker 网络   ┌──────────────┐<br>│ Go <span class="hljs-title function_">API</span> <span class="hljs-params">(Gin)</span>   │◄────────────────────►│    MySQL     │<br>│ 账号/话单       │                      └──────────────┘<br>└────────────────┘<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-1-组件职责"><a href="#2-1-组件职责" class="headerlink" title="2.1 组件职责"></a>2.1 组件职责</h3><table>
+<thead>
+<tr>
+<th>组件</th>
+<th>技术</th>
+<th>职责</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Flutter App</td>
+<td>sip_ua + flutter_webrtc + Riverpod + drift</td>
+<td>UI、SIP 注册&#x2F;呼叫、本地通话记录缓存与同步</td>
+</tr>
+<tr>
+<td>FreeSWITCH</td>
+<td>safarov&#x2F;freeswitch 镜像</td>
+<td>SIP 注册认证、呼叫桥接、RTP 转发</td>
+</tr>
+<tr>
+<td>Go API</td>
+<td>Gin + GORM + JWT</td>
+<td>用户注册登录、分机分配、话单存储、<strong>动态目录回调</strong></td>
+</tr>
+<tr>
+<td>MySQL</td>
+<td>8.0</td>
+<td>users &#x2F; sip_accounts &#x2F; call_records</td>
+</tr>
+<tr>
+<td>Caddy</td>
+<td>复用同机已有实例</td>
+<td>HTTPS 反代 API、WebSocket 反代 &#x2F;ws → FS</td>
+</tr>
+</tbody></table>
+<p>核心设计点：<strong>FreeSWITCH 不静态配置分机</strong>，而是通过 <code>mod_xml_curl</code> 把目录查询实时回调给 Go API——注册一个用户就自动拥有一个 SIP 分机，零同步成本。</p>
+<h3 id="2-2-关键链路"><a href="#2-2-关键链路" class="headerlink" title="2.2 关键链路"></a>2.2 关键链路</h3><p><strong>注册链路</strong>（App 上线）：</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs stata"><span class="hljs-keyword">App</span> ──REGISTER──► FS ──<span class="hljs-keyword">POST</span> /fsw/directory(user=1002)──► Go API ──► MySQL<br><span class="hljs-keyword">App</span> ◄──401+nonce── FS ◄──────────目录XML(密码)──────────┘<br><span class="hljs-keyword">App</span> ──REGISTER+Digest摘要──► FS ──校验──► 200 OK（REGED）<br></code></pre></td></tr></table></figure>
+
+<p><strong>呼叫链路</strong>：</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs scss"><span class="hljs-selector-tag">A</span> ──<span class="hljs-built_in">INVITE</span>(SDP)──► FS：查被叫是否在线 ──► 桥接 ──INVITE──► <span class="hljs-selector-tag">B</span> 振铃<br><span class="hljs-selector-tag">B</span> ──<span class="hljs-number">200</span> <span class="hljs-built_in">OK</span>(SDP)──► FS ──ACK──► 双向 RTP 语音<br></code></pre></td></tr></table></figure>
+
+<p>拨号计划只需一条：4 位数字 → <code>bridge user/$1@$$&#123;domain&#125;</code>。</p>
+<p><strong>话单链路</strong>：通话结束 → App 本地 SQLite 先落库（保证离线不丢）→ 尽力上报 <code>POST /calls</code> → 游标分页拉取合并（按 serverId 去重回填）。</p>
+<hr>
+<h2 id="三、服务端实现要点（Go）"><a href="#三、服务端实现要点（Go）" class="headerlink" title="三、服务端实现要点（Go）"></a>三、服务端实现要点（Go）</h2><h3 id="3-1-分机原子分配"><a href="#3-1-分机原子分配" class="headerlink" title="3.1 分机原子分配"></a>3.1 分机原子分配</h3><p>注册即分配最小空闲分机（从 1001 起），必须处理并发：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-function"><span class="hljs-keyword">func</span> <span class="hljs-params">(s *Store)</span></span> RegisterUser(ctx context.Context, username, passwordHash <span class="hljs-type">string</span>) (*model.User, *model.SipAccount, <span class="hljs-type">error</span>) &#123;<br>    s.mu.Lock()          <span class="hljs-comment">// 进程内互斥，串行化分机分配</span><br>    <span class="hljs-keyword">defer</span> s.mu.Unlock()<br>    <span class="hljs-keyword">var</span> acc *model.SipAccount<br>    err := s.DB.WithContext(ctx).Transaction(<span class="hljs-function"><span class="hljs-keyword">func</span><span class="hljs-params">(tx *gorm.DB)</span></span> <span class="hljs-type">error</span> &#123;<br>        <span class="hljs-keyword">if</span> err := tx.Create(u).Error; err != <span class="hljs-literal">nil</span> &#123; <span class="hljs-keyword">return</span> err &#125;<br>        ext, e := allocateInTx(ctx, tx)   <span class="hljs-comment">// 事务内分配</span><br>        acc = &amp;model.SipAccount&#123;UserID: u.ID, Extension: ext, ...&#125;<br>        <span class="hljs-keyword">return</span> tx.Create(acc).Error       <span class="hljs-comment">// 部分失败整体回滚</span><br>    &#125;)<br>    ...<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>配合 <code>gorm.Config&#123;TranslateError: true&#125;</code>，把用户名唯一冲突翻译成 <code>gorm.ErrDuplicatedKey</code> → 精确返回 409 而不是笼统 500。</p>
+<h3 id="3-2-xml-curl-目录回调（认证的核心）"><a href="#3-2-xml-curl-目录回调（认证的核心）" class="headerlink" title="3.2 xml_curl 目录回调（认证的核心）"></a>3.2 xml_curl 目录回调（认证的核心）</h3><p>FreeSWITCH 收到 REGISTER 时会 POST 表单过来，Go 侧按协议返回 XML 即完成”数据库即目录”：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-comment">// 命中用户 → 返回带密码的目录 XML；未命中 → not-found XML</span><br><span class="hljs-comment">// 两条铁律：永远回 HTTP 200（FS 用 XML 表达结果）；仅限内网暴露（含认证材料）</span><br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="四、Flutter-端实现要点"><a href="#四、Flutter-端实现要点" class="headerlink" title="四、Flutter 端实现要点"></a>四、Flutter 端实现要点</h2><table>
+<thead>
+<tr>
+<th>模块</th>
+<th>方案</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SIP 封装</td>
+<td><code>sip_ua</code>（内置 flutter_webrtc），抽象 <code>CallEngine</code> 接口 + Fake 便于测试</td>
+</tr>
+<tr>
+<td>状态机</td>
+<td>idle → outgoing → active(计时) → ended；来信未接自动记 missed</td>
+</tr>
+<tr>
+<td>本地存储</td>
+<td>drift(SQLite)：通话记录镜像 + 未上报队列</td>
+</tr>
+<tr>
+<td>同步</td>
+<td>pushPending 逐条尽力上报 + pullMerge 按 serverId&#x2F;三元组回填合并</td>
+</tr>
+<tr>
+<td>会话</td>
+<td>flutter_secure_storage 存 JWT 与分机凭证</td>
+</tr>
+<tr>
+<td>保活</td>
+<td>flutter_background_service 前台麦克风服务 + 通话通知</td>
+</tr>
+</tbody></table>
+<p>UI 遵循「Minimal &amp; Direct」设计系统：Inter 字体、单一金色 CTA、底部三 Tab（历史&#x2F;拨号&#x2F;账号）、触控目标 ≥48dp、明暗双主题语义色 token。</p>
+<hr>
+<h2 id="五、部署与端口"><a href="#五、部署与端口" class="headerlink" title="五、部署与端口"></a>五、部署与端口</h2><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-comment"># docker-compose（与已有 caddy/mysql 同网络）</span><br><span class="hljs-attr">sip-api:</span>  <span class="hljs-string">build</span> <span class="hljs-string">./server,</span> <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span><span class="hljs-string">:18080</span>   <span class="hljs-comment"># 不暴露公网，走 Caddy</span><br><span class="hljs-attr">sip-fs:</span>   <span class="hljs-number">5060</span><span class="hljs-string">/udp(SIP)</span> <span class="hljs-number">5066</span><span class="hljs-string">/tcp(WS)</span> <span class="hljs-number">7443</span><span class="hljs-string">/tcp(WSS)</span> <span class="hljs-number">16384</span><span class="hljs-number">-16404</span><span class="hljs-string">/udp(RTP)</span><br></code></pre></td></tr></table></figure>
+
+<p>Caddy 侧三条路由：<code>/sipapi/*</code> 剥前缀反代 API、<code>/ws</code> 反代 FS 的 5066、<code>/sipapi/api/v1/fsw/*</code> 直接 <strong>403</strong>（该接口下发 SIP 密码，绝不能公网可达）。</p>
+<p>安全组只需：443(TCP)、5060(UDP)、7443(TCP)、16384-16404(UDP)。</p>
+<hr>
+<h2 id="六、踩坑记录（全是真金白银的时间）"><a href="#六、踩坑记录（全是真金白银的时间）" class="headerlink" title="六、踩坑记录（全是真金白银的时间）"></a>六、踩坑记录（全是真金白银的时间）</h2><ol>
+<li><strong><code>Can&#39;t register a pointer</code> 403</strong>：容器从 <code>go-api</code> 改名 <code>sip-api</code> 后，xml_curl 的 gateway-url 没同步，DNS 解析失败 → FS <strong>静默回退</strong>静态目录的指针文件 → 认证失败。教训：FS 目录回调查不到时不会报错，会悄悄兜底。</li>
+<li><strong>Caddyfile 单文件 bind mount</strong>：宿主机 <code>mv</code> 替换文件换了 inode，容器里永远读旧内容。要么原地写，要么重启容器。</li>
+<li><strong>WS 未连上就 register</strong>：<code>helper.start()</code> 后立刻 <code>register()</code>，transport 还在 connecting，REGISTER 直接丢。改为依赖 <code>settings.register=true</code> 自动注册 + 失败指数退避重试。</li>
+<li><strong>注册并发竞态</strong>：分配分机与插入分两步，并发下两人同抢一个号。锁 + 事务合并为原子操作。</li>
+<li><strong>服务器构建 Go 被墙</strong>：<code>go mod download</code> 卡死。本地交叉编译 <code>GOOS=linux GOARCH=amd64</code> 上传二进制，Dockerfile 退化成 <code>FROM alpine + COPY</code>，秒级构建。</li>
+<li><strong>Dart TLS 被本机 VPN 掐断</strong>：<code>HandshakeException: Connection terminated during handshake</code>，浏览器&#x2F;curl 都正常，唯独 Dart 被按域名分流拦了。换明文 HTTP 路由绕开（生产记得上正规证书）。</li>
+</ol>
+<hr>
+<h2 id="七、效果"><a href="#七、效果" class="headerlink" title="七、效果"></a>七、效果</h2><p>双端（两台模拟器&#x2F;真机）注册 → 互拨分机号 → 振铃接听 → 双向语音 → 挂断后双方历史自动落库并同步云端。整套系统单台 2G 内存小服务器即可承载，语音走 WebRTC，局域网与公网均可部署。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/" class="category-chain-item">技术分享</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/SIP/" class="print-no-link">#SIP</a>
+      
+        <a href="/tags/FreeSWITCH/" class="print-no-link">#FreeSWITCH</a>
+      
+        <a href="/tags/Flutter/" class="print-no-link">#Flutter</a>
+      
+        <a href="/tags/Go/" class="print-no-link">#Go</a>
+      
+        <a href="/tags/WebRTC/" class="print-no-link">#WebRTC</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>SIP软电话实现</div>
+      <div>https://blog.newpon.top/2026/08/29/sip软电话实现/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>John Doe</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年8月29日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/05/26/Ai%E8%AF%BB%E5%8F%96%E5%BE%AE%E4%BF%A1%E5%BC%80%E5%8F%91%E8%80%85%E5%B7%A5%E5%85%B7/" title="AI 读取微信开发者工具：使用 uniapp-wechat-mcp 暴露小程序调试能力">
+                        <span class="hidden-mobile">AI 读取微信开发者工具：使用 uniapp-wechat-mcp 暴露小程序调试能力</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'NowPion/NowPion.github.io');
+      s.setAttribute('issue-term', 'title');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
