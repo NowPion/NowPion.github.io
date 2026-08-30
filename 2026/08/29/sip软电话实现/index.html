@@ -29,7 +29,7 @@
 <meta property="og:image" content="https://pub-7843c36ae8c74acbb64998494a352f61.r2.dev/picgo/20260830142104832.png">
 <meta property="og:image" content="https://pub-7843c36ae8c74acbb64998494a352f61.r2.dev/picgo/20260830143737870.png">
 <meta property="article:published_time" content="2026-08-29T12:30:00.000Z">
-<meta property="article:modified_time" content="2026-08-30T06:52:46.239Z">
+<meta property="article:modified_time" content="2026-08-30T06:56:36.550Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="SIP">
 <meta property="article:tag" content="FreeSWITCH">
@@ -370,38 +370,37 @@
 <li>软电话场景常用 <strong>WebRTC</strong> 做媒体层：DTLS-SRTP 加密、ICE 打洞、回声消除都白送，浏览器和移动端支持完善</li>
 </ul>
 <hr>
-<h2 id="二、系统总体架构"><a href="#二、系统总体架构" class="headerlink" title="二、系统总体架构"></a>二、系统总体架构</h2><pre><code class=" mermaid">flowchart TB
-    subgraph app[&quot;Flutter App (Android)&quot;]
+<h2 id="二、系统总体架构"><a href="#二、系统总体架构" class="headerlink" title="二、系统总体架构"></a>二、系统总体架构</h2><div style="max-width: 650px; margin: 20px auto; overflow-x: auto;">
+
+<pre><code class=" mermaid">flowchart TB
+    subgraph app[&quot;Flutter App&quot;]
         UI[&quot;UI层&quot;]
-        ENGINE[&quot;sip_ua + flutter_webrtc&quot;]
-        DBL[(&quot;drift SQLite&quot;)]
+        ENGINE[&quot;SIP状态机&quot;]
+        DBL[(&quot;SQLite&quot;)]
     end
 
-    subgraph gateway[&quot;Caddy 网关 TLS&quot;]
-        R1[&quot;sipapi → Go API&quot;]
-        R2[&quot;ws → FreeSWITCH&quot;]
+    subgraph gateway[&quot;Caddy网关&quot;]
+        R1[&quot;HTTPS API&quot;]
+        R2[&quot;WSS&quot;]
     end
 
-    subgraph core[&quot;Docker 网络&quot;]
+    subgraph core[&quot;Docker网络&quot;]
         FS[&quot;FreeSWITCH&quot;]
-        API[&quot;Go API Gin&quot;]
+        API[&quot;Go API&quot;]
         MYSQL[(&quot;MySQL 8&quot;)]
     end
 
     UI --&gt; ENGINE
     UI --&gt; DBL
-
     ENGINE --&gt; R2
     R2 --&gt; FS
-
     FS --&gt; ENGINE
-
     UI --&gt; R1
     R1 --&gt; API
-
     API --&gt; MYSQL
-    FS --&gt; API
 </code></pre>
+
+</div>
 
 <h3 id="2-1-组件职责"><a href="#2-1-组件职责" class="headerlink" title="2.1 组件职责"></a>2.1 组件职责</h3><table>
 <thead>
