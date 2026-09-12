@@ -22,20 +22,20 @@
     <meta name="description" content="SIP 软电话实现：从协议到全栈落地本文基于我实际落地的一套 SIP 软电话系统（Flutter 安卓 App + Go API + FreeSWITCH + MySQL + Caddy），先讲清楚 SIP 协议本身是什么，再拆解整个项目的架构、关键链路与踩坑记录。所有内容均来自真实可运行的服务器部署，而非纸上谈兵。   项目源码：github.com&#x2F;NowPion&#x2F;SIP_">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SIP软电话实现">
-<meta property="og:url" content="https://blog.newpon.top/2026/08/29/sip%E8%BD%AF%E7%94%B5%E8%AF%9D%E5%AE%9E%E7%8E%B0/index.html">
+<meta property="og:url" content="https://blog.newpon.top/2026/09/12/sip%E8%BD%AF%E7%94%B5%E8%AF%9D%E5%AE%9E%E7%8E%B0/index.html">
 <meta property="og:site_name" content="Niezidong">
 <meta property="og:description" content="SIP 软电话实现：从协议到全栈落地本文基于我实际落地的一套 SIP 软电话系统（Flutter 安卓 App + Go API + FreeSWITCH + MySQL + Caddy），先讲清楚 SIP 协议本身是什么，再拆解整个项目的架构、关键链路与踩坑记录。所有内容均来自真实可运行的服务器部署，而非纸上谈兵。   项目源码：github.com&#x2F;NowPion&#x2F;SIP_">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://pub-7843c36ae8c74acbb64998494a352f61.r2.dev/picgo/20260830142104832.png">
 <meta property="og:image" content="https://pub-7843c36ae8c74acbb64998494a352f61.r2.dev/picgo/20260830143737870.png">
-<meta property="article:published_time" content="2026-08-29T12:30:00.000Z">
-<meta property="article:modified_time" content="2026-08-30T06:56:36.550Z">
+<meta property="article:published_time" content="2026-09-12T08:33:00.000Z">
+<meta property="article:modified_time" content="2026-09-12T08:17:24.165Z">
 <meta property="article:author" content="John Doe">
 <meta property="article:tag" content="SIP">
 <meta property="article:tag" content="FreeSWITCH">
+<meta property="article:tag" content="WebRTC">
 <meta property="article:tag" content="Flutter">
 <meta property="article:tag" content="Go">
-<meta property="article:tag" content="WebRTC">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://pub-7843c36ae8c74acbb64998494a352f61.r2.dev/picgo/20260830142104832.png">
   
@@ -221,8 +221,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2026-08-29 20:30" pubdate>
-          2026年8月29日 晚上
+        <time datetime="2026-09-12 16:33" pubdate>
+          2026年9月12日 下午
         </time>
       </span>
     
@@ -542,11 +542,11 @@
       
         <a href="/tags/FreeSWITCH/" class="print-no-link">#FreeSWITCH</a>
       
+        <a href="/tags/WebRTC/" class="print-no-link">#WebRTC</a>
+      
         <a href="/tags/Flutter/" class="print-no-link">#Flutter</a>
       
         <a href="/tags/Go/" class="print-no-link">#Go</a>
-      
-        <a href="/tags/WebRTC/" class="print-no-link">#WebRTC</a>
       
     </div>
   
@@ -559,7 +559,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>SIP软电话实现</div>
-      <div>https://blog.newpon.top/2026/08/29/sip软电话实现/</div>
+      <div>https://blog.newpon.top/2026/09/12/sip软电话实现/</div>
     </div>
     <div class="license-meta">
       
@@ -571,7 +571,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2026年8月29日</div>
+          <div>2026年9月12日</div>
         </div>
       
       
@@ -607,8 +607,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2026/05/26/Ai%E8%AF%BB%E5%8F%96%E5%BE%AE%E4%BF%A1%E5%BC%80%E5%8F%91%E8%80%85%E5%B7%A5%E5%85%B7/" title="AI 读取微信开发者工具：使用 uniapp-wechat-mcp 暴露小程序调试能力">
-                        <span class="hidden-mobile">AI 读取微信开发者工具：使用 uniapp-wechat-mcp 暴露小程序调试能力</span>
+                      <a href="/2026/09/12/SIP%E8%BD%AF%E7%94%B5%E8%AF%9D%E5%85%A8%E6%A0%88%E6%9E%B6%E6%9E%84%E4%B8%8E%E5%AE%9E%E6%88%98%E8%A7%A3%E6%9E%90/" title="SIP 软电话全栈架构与实战解析：从协议原理、FreeSWITCH 到前后端闭环落地">
+                        <span class="hidden-mobile">SIP 软电话全栈架构与实战解析：从协议原理、FreeSWITCH 到前后端闭环落地</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
