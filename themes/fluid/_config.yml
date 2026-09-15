@@ -1037,6 +1037,12 @@ links:
   # Member item of page
   items:
     - {
+      title: "LINUX DO",
+      intro: "新的理想型社区",
+      link: "https://linux.do/",
+      avatar: "/img/linuxdo.png"
+    }
+    - {
       title: "Fluid Blog",
       intro: "主题博客",
       link: "https://hexo.fluid-dev.com/",
