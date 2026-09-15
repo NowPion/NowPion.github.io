@@ -1042,6 +1042,12 @@ links:
       link: "https://linux.do/",
       avatar: "/img/linuxdo.png"
     }
+    - {
+      title: "UpXuu's blog",
+      intro: "逐光而上",
+      link: "https://upxuu.com",
+      avatar: "https://upxuu.com/images/me.jpg"
+    }
 
   # 当成员头像加载失败时，替换为指定图片
   # When the member avatar fails to load, replace the specified image
