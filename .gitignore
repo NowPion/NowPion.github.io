@@ -30,3 +30,6 @@ Desktop.ini
 .tmp/
 *.bak
 *~
+
+# WorkBuddy AI 工作目录
+.workbuddy-ai/
