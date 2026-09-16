@@ -1,0 +1,253 @@
+/* ==========================================================================
+   NieBlong · 灵动主题定制
+   底部不规则大波浪 + 交互动效
+   注入方式：主题配置 custom_css: /css/custom.css
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. 变量 —— 波浪配色随亮 / 暗模式自动切换
+   -------------------------------------------------------------------------- */
+:root {
+  --wave-blue: 55, 138, 221;
+  --wave-teal: 29, 158, 117;
+  --wave-boost: 1.2;
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-smooth: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* 跟随系统暗色（用户未手动切换时生效） */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-user-color-scheme]) {
+    --wave-blue: 96, 170, 245;
+    --wave-teal: 93, 202, 165;
+    --wave-boost: 1.4;
+  }
+}
+
+/* 用户手动切到暗色 */
+[data-user-color-scheme="dark"] {
+  --wave-blue: 96, 170, 245;
+  --wave-teal: 93, 202, 165;
+  --wave-boost: 1.4;
+}
+
+/* --------------------------------------------------------------------------
+   2. 底部波浪
+   z-index:-1 让波浪位于页面背景之上、所有内容之下
+   -------------------------------------------------------------------------- */
+.ocean {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  animation: ocean-fade-in 1.4s var(--ease-smooth) 0.2s forwards;
+}
+
+@keyframes ocean-fade-in {
+  to { opacity: 1; }
+}
+
+.ocean-layer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  display: block;
+  width: calc(100% + 1440px);
+  background-color: currentColor;
+  -webkit-mask-repeat: repeat-x;
+  mask-repeat: repeat-x;
+  -webkit-mask-size: 1440px 100%;
+  mask-size: 1440px 100%;
+  -webkit-mask-position: bottom left;
+  mask-position: bottom left;
+  will-change: transform;
+}
+
+/* 第 1 层：最远、最高、最淡，向右缓慢漂移 */
+.ocean-1 {
+  height: 470px;
+  color: rgba(var(--wave-blue), calc(0.070 * var(--wave-boost)));
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320' preserveAspectRatio='none'%3E%3Cpath fill='white' d='M0,190 C140,120 260,120 400,185 C540,250 660,255 800,195 C940,135 1080,110 1220,175 C1330,225 1380,220 1440,190 L1440,320 L0,320 Z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320' preserveAspectRatio='none'%3E%3Cpath fill='white' d='M0,190 C140,120 260,120 400,185 C540,250 660,255 800,195 C940,135 1080,110 1220,175 C1330,225 1380,220 1440,190 L1440,320 L0,320 Z'/%3E%3C/svg%3E");
+  animation: ocean-drift-right 34s linear infinite;
+}
+
+/* 第 2 层：反向漂移，制造层次错位 */
+.ocean-2 {
+  height: 380px;
+  color: rgba(var(--wave-blue), calc(0.085 * var(--wave-boost)));
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320' preserveAspectRatio='none'%3E%3Cpath fill='white' d='M0,150 C120,210 240,210 360,150 C480,90 620,85 740,145 C860,205 980,235 1100,175 C1220,115 1330,95 1440,150 L1440,320 L0,320 Z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320' preserveAspectRatio='none'%3E%3Cpath fill='white' d='M0,150 C120,210 240,210 360,150 C480,90 620,85 740,145 C860,205 980,235 1100,175 C1220,115 1330,95 1440,150 L1440,320 L0,320 Z'/%3E%3C/svg%3E");
+  animation: ocean-drift-left 25s linear infinite;
+}
+
+/* 第 3 层：开始转入青色，节奏加快 */
+.ocean-3 {
+  height: 300px;
+  color: rgba(var(--wave-teal), calc(0.095 * var(--wave-boost)));
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320' preserveAspectRatio='none'%3E%3Cpath fill='white' d='M0,120 C160,180 300,60 460,110 C620,160 760,240 920,190 C1080,140 1280,60 1440,120 L1440,320 L0,320 Z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320' preserveAspectRatio='none'%3E%3Cpath fill='white' d='M0,120 C160,180 300,60 460,110 C620,160 760,240 920,190 C1080,140 1280,60 1440,120 L1440,320 L0,320 Z'/%3E%3C/svg%3E");
+  animation: ocean-drift-right 19s linear infinite;
+}
+
+/* 第 4 层：最近、最矮、最显，快速反向漂移 */
+.ocean-4 {
+  height: 220px;
+  color: rgba(var(--wave-teal), calc(0.115 * var(--wave-boost)));
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320' preserveAspectRatio='none'%3E%3Cpath fill='white' d='M0,90 C120,140 280,140 400,90 C520,40 680,40 800,90 C920,140 1080,150 1200,100 C1300,58 1370,55 1440,90 L1440,320 L0,320 Z'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320' preserveAspectRatio='none'%3E%3Cpath fill='white' d='M0,90 C120,140 280,140 400,90 C520,40 680,40 800,90 C920,140 1080,150 1200,100 C1300,58 1370,55 1440,90 L1440,320 L0,320 Z'/%3E%3C/svg%3E");
+  animation: ocean-drift-left 13s linear infinite;
+}
+
+/* 位移量恰好等于图案宽度 1440px，保证循环无缝 */
+@keyframes ocean-drift-right {
+  from { transform: translateX(-1440px); }
+  to   { transform: translateX(0); }
+}
+
+@keyframes ocean-drift-left {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-1440px); }
+}
+
+/* 给波浪留出空间，避免页脚文字压在浪峰上 */
+footer {
+  position: relative;
+  padding-bottom: 8rem;
+}
+
+/* --------------------------------------------------------------------------
+   3. 首页文章卡片
+   -------------------------------------------------------------------------- */
+.index-card {
+  transition: transform 0.4s var(--ease-spring);
+}
+
+.index-card:hover {
+  transform: translateY(-6px);
+}
+
+.index-card .index-img img {
+  transition: transform 0.6s var(--ease-smooth), box-shadow 0.4s var(--ease-smooth);
+}
+
+.index-card:hover .index-img img {
+  transform: scale(1.035);
+  box-shadow: 0 14px 34px 0 rgba(0, 0, 0, 0.2);
+}
+
+.index-card .index-header {
+  transition: color 0.3s var(--ease-smooth);
+}
+
+.index-card:hover .index-header {
+  color: var(--link-hover-color);
+}
+
+/* --------------------------------------------------------------------------
+   4. 导航栏：下划线由中间展开
+   -------------------------------------------------------------------------- */
+.navbar .nav-item .nav-link {
+  position: relative;
+}
+
+.navbar .nav-item .nav-link::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0.1rem;
+  width: 0;
+  height: 2px;
+  border-radius: 2px;
+  background-color: currentColor;
+  transform: translateX(-50%);
+  transition: width 0.32s var(--ease-smooth);
+}
+
+.navbar .nav-item .nav-link:hover::after {
+  width: 55%;
+}
+
+/* --------------------------------------------------------------------------
+   5. 正文链接：下划线生长
+   -------------------------------------------------------------------------- */
+.markdown-body a {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 0 1px;
+  transition: background-size 0.3s var(--ease-smooth), color 0.3s var(--ease-smooth);
+}
+
+.markdown-body a:hover {
+  background-size: 100% 1px;
+}
+
+/* --------------------------------------------------------------------------
+   6. 回到顶部按钮
+   -------------------------------------------------------------------------- */
+#scroll-top-button {
+  transition: transform 0.35s var(--ease-spring), background-color 0.3s var(--ease-smooth);
+}
+
+#scroll-top-button:hover {
+  transform: translateY(-4px) scale(1.08);
+}
+
+/* --------------------------------------------------------------------------
+   7. 滚动进场（配合 custom.js 的 IntersectionObserver）
+   -------------------------------------------------------------------------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.75s var(--ease-smooth), transform 0.75s var(--ease-smooth);
+}
+
+/* --------------------------------------------------------------------------
+   8. 移动端：压低波浪高度，避免占据过多视野
+   -------------------------------------------------------------------------- */
+@media (max-width: 767px) {
+  .ocean-1 { height: 285px; }
+  .ocean-2 { height: 230px; }
+  .ocean-3 { height: 180px; }
+  .ocean-4 { height: 130px; }
+
+  footer { padding-bottom: 5.5rem; }
+}
+
+/* --------------------------------------------------------------------------
+   9. 尊重「减少动态效果」系统偏好
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .ocean {
+    opacity: 1;
+    animation: none;
+  }
+
+  .ocean-layer {
+    animation: none !important;
+  }
+
+  .index-card,
+  .index-card .index-img img,
+  .index-card .index-header,
+  #scroll-top-button,
+  .navbar .nav-item .nav-link::after,
+  .markdown-body a {
+    transition: none !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
