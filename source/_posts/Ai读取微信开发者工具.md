@@ -3,6 +3,7 @@ title: AI 调试微信开发者工具
 date: 2026-05-26 10:14:34
 tags: [MCP, 微信开发者工具, uniapp, 小程序, Codex]
 categories: [技术分享]
+description: 介绍 uniapp-wechat-mcp 开源工具，基于微信开发者工具 CLI 与 miniprogram-automator 封装为 MCP Server，让 AI 工具直接读取、控制与调试微信小程序。
 ---
 
 微信小程序这个调试链路是真的烦，尤其是 uniapp 项目。

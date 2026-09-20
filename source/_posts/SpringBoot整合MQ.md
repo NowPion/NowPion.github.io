@@ -3,6 +3,7 @@ title: Spring Boot 整合MQ
 date: 2025-11-8 14:08:55
 tags: [Spring Boot, 消息队列,rocketmq ]
 categories: [技术分享]
+description: 详细介绍在 Spring Boot 项目中整合 RocketMQ 消息队列，实现异步解耦与流量削峰，涵盖生产端发送与消费端监听的完整配置实战。
 ---
 
 # Spring Boot 整合 RocketMQ

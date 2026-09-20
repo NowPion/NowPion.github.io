@@ -95,7 +95,7 @@ fun_features:
 
     # 是否循环播放效果
     # If true, loop animation
-    loop: false
+    loop: true
 
     # 在指定页面开启，不填则在所有页面开启
     # Enable in specified page, all pages by default
@@ -319,7 +319,7 @@ web_analytics:
 # Canonical, to specify a canonical URL for Google Search, need to set up `url: http://yourdomain.com` in hexo _config.yml
 # See: https://support.google.com/webmasters/answer/139066
 canonical:
-  enable: false
+  enable: true
 
 # 对页面中的图片和评论插件进行懒加载处理，可见范围外的元素不会提前加载
 # Lazy loading of images and comment plugin on the page

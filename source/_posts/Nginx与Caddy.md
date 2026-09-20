@@ -3,6 +3,7 @@ title: Nginx与Caddy
 date: 2025-10-25 16:56:18
 tags: [Nginx, Caddy, Docker, 反向代理]
 categories: [技术分享]
+description: 对比 Nginx 与 Caddy 两大反向代理服务器的核心特性、性能表现与配置差异，并提供基于 Docker 的快速部署与反向代理实战示例。
 ---
 
 # Nginx 与 Caddy：特点、区别与 Docker 部署

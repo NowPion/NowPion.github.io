@@ -3,6 +3,7 @@ title: Spring Boot 整合支付宝
 date: 2025-10-30 20:08:55
 tags: [Spring Boot, 支付宝, 支付集成]
 categories: [技术分享]
+description: 介绍 Spring Boot 集成支付宝 Easy SDK 的实战流程，涵盖公私钥配置、沙箱环境联调、统一下单接口调用及异步支付回调通知验签处理。
 ---
 
 # 一、前提准备

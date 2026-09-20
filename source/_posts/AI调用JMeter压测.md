@@ -3,6 +3,7 @@ title: AI 调用 JMeter 自动化压测
 date: 2026-09-10 11:35:00
 tags: [MCP, JMeter, 性能测试, 自动化压测, AI]
 categories: [技术分享]
+description: 深度重构并开源 jmeter-mcp-server，基于模型上下文协议（MCP）将 Apache JMeter 改造为 AI 原生自动化压测服务，打通 AI 与性能测试壁垒。
 ---
 
 传统的性能测试工具链是出了名的重。

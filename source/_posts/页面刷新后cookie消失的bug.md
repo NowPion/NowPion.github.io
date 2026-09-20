@@ -3,6 +3,7 @@ title: 页面刷新后cookie消失的bug
 date: 2025-11-1 15:14:34
 tags: [前端, Cookie, CORS]
 categories: [技术分享]
+description: 分析排查前端单页面应用在页面刷新后 Cookie 丢失且后续请求无法携带的问题，深入拆解跨域 CORS、SameSite 属性与凭证模式（withCredentials）设置。
 ---
 
 # 问题发现

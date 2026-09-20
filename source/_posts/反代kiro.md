@@ -3,6 +3,7 @@ title: 反代 Kiro：使用 Kiro-Go 暴露 OpenAI / Anthropic 兼容接口
 date: 2026-05-22 10:14:34
 tags: [Kiro, Kiro-Go, Claude Code, CC Switch, Docker]
 categories: [技术分享]
+description: 使用开源工具 Kiro-Go 反代 Kiro，暴露 OpenAI 与 Anthropic 兼容接口，支持多账号池轮询、SSE 流式响应及 Docker 快速容器化部署。
 ---
 
 Kiro 的这个ui是真几把难用，而且还很卡，就想着把Kiro的模型反代出来

@@ -4,7 +4,8 @@ title: Redis + AOP 实现的接口限流
 date: 2025-11-12 20:08:55
 tags: [Spring Boot, Redis, AOP]
 categories: [技术分享]
-------------------
+description: 介绍在 Spring Boot 项目中利用 Redis 与自定义 AOP 注解实现分布式接口限流的完整方案，有效防止高并发刷接口与突发流量导致系统崩溃。
+---
 
 # 一、前言
 

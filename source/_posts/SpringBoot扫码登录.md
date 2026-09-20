@@ -3,6 +3,7 @@ title: Spring Boot 实现扫码登录
 date: 2026-3-30 14:08:55
 tags: [Spring Boot, Redis, Zxing]
 categories: [技术分享]
+description: 基于 Spring Boot 3 与 Redis 实现安全的二维码扫码登录方案，包含二维码生成、轮询/状态管理、移动端确认授权与登录态同步全流程。
 ---
 
 # Spring Boot 实现扫码登录

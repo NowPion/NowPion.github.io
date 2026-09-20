@@ -3,6 +3,7 @@ title: SIP 软电话全栈架构与实战解析
 date: 2026-09-12 16:00:00
 tags: [SIP, FreeSWITCH, WebRTC, Flutter, Go, 架构设计, 音视频通信]
 categories: [技术分享]
+description: 从第一性原理深入剖析 SIP 软电话全栈系统架构，涵盖 Flutter 安卓客户端、Go API 服务端、FreeSWITCH 媒体网关及信令交互设计与实战解析。
 ---
 
 刷抖音刷到了别人实现的sip软电话，感觉还挺有意思，就研究了研究

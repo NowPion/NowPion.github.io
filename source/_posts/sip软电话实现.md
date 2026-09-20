@@ -3,6 +3,7 @@ title: SIP软电话实现
 date: 2026-9-12 16:33:00
 tags: [SIP, FreeSWITCH, Flutter, Go, WebRTC]
 categories: [技术分享]
+description: 记录真实可运行的 SIP 软电话系统全栈落地实战，拆解 SIP 协议核心概念（请求方法、状态码）与 Flutter + Go + FreeSWITCH 关键链路踩坑。
 ---
 
 # SIP 软电话实现：从协议到全栈落地

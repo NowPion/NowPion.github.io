@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+Allow: /archives/
+Allow: /categories/
+Allow: /tags/
+Allow: /about/
+Allow: /links/
+Disallow: /css/
+Disallow: /js/
+Disallow: /fonts/
+Disallow: /img/
+Disallow: /local-search.xml
+
+Sitemap: https://blog.newpon.top/sitemap.xml
+Sitemap: https://blog.newpon.top/baidusitemap.xml

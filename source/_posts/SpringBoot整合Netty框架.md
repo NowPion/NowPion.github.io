@@ -3,6 +3,7 @@ title: Spring Boot 整合Netty框架
 date: 2025-11-4 20:08:55
 tags: [Spring Boot, Im系统, Netty框架]
 categories: [技术分享]
+description: 基于 Spring Boot 整合 Netty 高性能网络通信框架，实现自定义协议长连接、心跳检测与断线重连，适用于高并发 IM 即时通讯系统。
 ---
 
 

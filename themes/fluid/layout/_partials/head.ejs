@@ -50,5 +50,31 @@ var ogConfig = Object.assign({ image: ogImage && url_for(ogImage) }, theme.open_
   <%- js_ex(theme.static_prefix.internal_js, 'color-schema.js') %>
   <%- partial('_partials/plugins/analytics.ejs') %>
 
+  <% if (is_post()) { %>
+  <script type="application/ld+json">
+  <%- JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    'headline': page.title,
+    'description': description || '',
+    'mainEntityOfPage': {
+      '@type': 'WebPage',
+      '@id': full_url_for(page.path)
+    },
+    'datePublished': date(page.date, 'YYYY-MM-DDTHH:mm:ssZ'),
+    'dateModified': date(page.updated, 'YYYY-MM-DDTHH:mm:ssZ'),
+    'author': {
+      '@type': 'Person',
+      'name': page.author || config.author
+    },
+    'publisher': {
+      '@type': 'Person',
+      'name': config.author
+    },
+    ...(ogImage ? { 'image': url_for(ogImage) } : {})
+  }) %>
+  </script>
+  <% } %>
+
   <%- inject_point('head') %>
 </head>

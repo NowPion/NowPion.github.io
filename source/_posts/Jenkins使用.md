@@ -3,6 +3,7 @@ title: Jenkins安装与使用
 date: 2026-03-20 12:00:00
 tags: [Jenkins, Docker, CI/CD]
 categories: [技术分享]
+description: 详解使用 Docker 快速安装与配置 Jenkins LTS 的全流程，包含数据卷持久化挂载、镜像源加速、常用插件安装与 CI/CD 基础构建流水线实战。
 ---
 
 # Jenkins 安装与使用（Docker）

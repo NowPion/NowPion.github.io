@@ -3,6 +3,7 @@ title: PostgreSQL特点与安装
 date: 2025-10-25 16:47:08
 tags: [PostgreSQL, Docker, 数据库]
 categories: [技术分享]
+description: 概述企业级开源关系型数据库 PostgreSQL 的关键特性（ACID、MVCC、丰富数据类型与索引），并提供基于 Docker 的快速安装与常用运维指南。
 ---
 
 # PostgreSQL 特点与安装（Docker）
