@@ -11,24 +11,26 @@
   <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
   <link rel="icon" href="/img/fluid.png">
   
+    <link rel="canonical" href="https://blog.newpon.top/2026/05/26/Ai读取微信开发者工具/"/>
+  
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="author" content="John Doe">
-  <meta name="keywords" content="">
+  <meta name="author" content="Niezidong">
+  <meta name="keywords" content="Niezidong,Java,Spring Boot,分布式,微服务,架构设计,Netty,Redis,技术博客">
   
-    <meta name="description" content="微信小程序这个调试链路是真的烦，尤其是 uniapp 项目。 AI 看得到代码，但是看不到微信开发者工具里的页面、data、console、截图和编译结果。你让它改页面，它只能靠猜；你让它排查 bug，它还得让你一遍遍复制日志，整个过程就很笨。 所以这里做了一个 uniapp-wechat-mcp，把微信开发者工具的 CLI 和 miniprogram-automator SDK 封装成 MCP">
+    <meta name="description" content="介绍 uniapp-wechat-mcp 开源工具，基于微信开发者工具 CLI 与 miniprogram-automator 封装为 MCP Server，让 AI 工具直接读取、控制与调试微信小程序。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="AI 调试微信开发者工具">
 <meta property="og:url" content="https://blog.newpon.top/2026/05/26/Ai%E8%AF%BB%E5%8F%96%E5%BE%AE%E4%BF%A1%E5%BC%80%E5%8F%91%E8%80%85%E5%B7%A5%E5%85%B7/index.html">
 <meta property="og:site_name" content="Niezidong">
-<meta property="og:description" content="微信小程序这个调试链路是真的烦，尤其是 uniapp 项目。 AI 看得到代码，但是看不到微信开发者工具里的页面、data、console、截图和编译结果。你让它改页面，它只能靠猜；你让它排查 bug，它还得让你一遍遍复制日志，整个过程就很笨。 所以这里做了一个 uniapp-wechat-mcp，把微信开发者工具的 CLI 和 miniprogram-automator SDK 封装成 MCP">
+<meta property="og:description" content="介绍 uniapp-wechat-mcp 开源工具，基于微信开发者工具 CLI 与 miniprogram-automator 封装为 MCP Server，让 AI 工具直接读取、控制与调试微信小程序。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-05-26T02:14:34.000Z">
-<meta property="article:modified_time" content="2026-09-15T15:49:07.421Z">
-<meta property="article:author" content="John Doe">
+<meta property="article:modified_time" content="2026-09-20T12:35:50.364Z">
+<meta property="article:author" content="Niezidong">
 <meta property="article:tag" content="MCP">
 <meta property="article:tag" content="微信开发者工具">
 <meta property="article:tag" content="uniapp">
@@ -94,6 +96,12 @@
   <script  src="/js/color-schema.js" ></script>
   
 
+
+  
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"BlogPosting","headline":"AI 调试微信开发者工具","description":"介绍 uniapp-wechat-mcp 开源工具，基于微信开发者工具 CLI 与 miniprogram-automator 封装为 MCP Server，让 AI 工具直接读取、控制与调试微信小程序。","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.newpon.top/2026/05/26/Ai%E8%AF%BB%E5%8F%96%E5%BE%AE%E4%BF%A1%E5%BC%80%E5%8F%91%E8%80%85%E5%B7%A5%E5%85%B7/"},"datePublished":"2026-05-26T10:14:34+08:00","dateModified":"2026-09-20T20:35:50+08:00","author":{"@type":"Person","name":"Niezidong"},"publisher":{"@type":"Person","name":"Niezidong"}}
+  </script>
+  
 
   
 <meta name="generator" content="Hexo 7.3.0"></head>
@@ -518,7 +526,7 @@
       
         <div class="license-meta-item">
           <div>作者</div>
-          <div>John Doe</div>
+          <div>Niezidong</div>
         </div>
       
       

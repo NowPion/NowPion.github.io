@@ -11,24 +11,26 @@
   <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
   <link rel="icon" href="/img/fluid.png">
   
+    <link rel="canonical" href="https://blog.newpon.top/2026/09/10/AI调用JMeter压测/"/>
+  
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="author" content="John Doe">
-  <meta name="keywords" content="">
+  <meta name="author" content="Niezidong">
+  <meta name="keywords" content="Niezidong,Java,Spring Boot,分布式,微服务,架构设计,Netty,Redis,技术博客">
   
-    <meta name="description" content="传统的性能测试工具链是出了名的重。 尤其是 Apache JMeter，每次为了测一个接口，先得打开启动奇慢的 Java Swing GUI 界面，手动去建线程组、HTTP 请求、添加 HTTP 信息头管理器、Cookie 管理器、配置察看结果树和聚合报告。改一个参数就要一层层展开树形目录去改，哪怕是在命令行用非 GUI 模式跑，生成出来的要么是几百兆的原始 JTL，要么是生成一个包含成百上千个">
+    <meta name="description" content="深度重构并开源 jmeter-mcp-server，基于模型上下文协议（MCP）将 Apache JMeter 改造为 AI 原生自动化压测服务，打通 AI 与性能测试壁垒。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="AI 调用 JMeter 自动化压测">
 <meta property="og:url" content="https://blog.newpon.top/2026/09/10/AI%E8%B0%83%E7%94%A8JMeter%E5%8E%8B%E6%B5%8B/index.html">
 <meta property="og:site_name" content="Niezidong">
-<meta property="og:description" content="传统的性能测试工具链是出了名的重。 尤其是 Apache JMeter，每次为了测一个接口，先得打开启动奇慢的 Java Swing GUI 界面，手动去建线程组、HTTP 请求、添加 HTTP 信息头管理器、Cookie 管理器、配置察看结果树和聚合报告。改一个参数就要一层层展开树形目录去改，哪怕是在命令行用非 GUI 模式跑，生成出来的要么是几百兆的原始 JTL，要么是生成一个包含成百上千个">
+<meta property="og:description" content="深度重构并开源 jmeter-mcp-server，基于模型上下文协议（MCP）将 Apache JMeter 改造为 AI 原生自动化压测服务，打通 AI 与性能测试壁垒。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-09-10T03:35:00.000Z">
-<meta property="article:modified_time" content="2026-09-15T15:49:07.399Z">
-<meta property="article:author" content="John Doe">
+<meta property="article:modified_time" content="2026-09-20T12:35:48.326Z">
+<meta property="article:author" content="Niezidong">
 <meta property="article:tag" content="MCP">
 <meta property="article:tag" content="JMeter">
 <meta property="article:tag" content="性能测试">
@@ -94,6 +96,12 @@
   <script  src="/js/color-schema.js" ></script>
   
 
+
+  
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"BlogPosting","headline":"AI 调用 JMeter 自动化压测","description":"深度重构并开源 jmeter-mcp-server，基于模型上下文协议（MCP）将 Apache JMeter 改造为 AI 原生自动化压测服务，打通 AI 与性能测试壁垒。","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.newpon.top/2026/09/10/AI%E8%B0%83%E7%94%A8JMeter%E5%8E%8B%E6%B5%8B/"},"datePublished":"2026-09-10T11:35:00+08:00","dateModified":"2026-09-20T20:35:48+08:00","author":{"@type":"Person","name":"Niezidong"},"publisher":{"@type":"Person","name":"Niezidong"}}
+  </script>
+  
 
   
 <meta name="generator" content="Hexo 7.3.0"></head>
@@ -489,7 +497,7 @@
       
         <div class="license-meta-item">
           <div>作者</div>
-          <div>John Doe</div>
+          <div>Niezidong</div>
         </div>
       
       

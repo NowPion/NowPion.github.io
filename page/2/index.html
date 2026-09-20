@@ -11,20 +11,25 @@
   <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
   <link rel="icon" href="/img/fluid.png">
   
+    <link rel="canonical" href="https://blog.newpon.top/page/2/"/>
+  
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="author" content="John Doe">
-  <meta name="keywords" content="">
+  <meta name="author" content="Niezidong">
+  <meta name="keywords" content="Niezidong,Java,Spring Boot,分布式,微服务,架构设计,Netty,Redis,技术博客">
   
-    <meta property="og:type" content="website">
+    <meta name="description" content="Niezidong的技术博客，记录与分享Java、Spring Boot、分布式系统、微服务、高并发架构设计及前端开发实践与思考。">
+<meta property="og:type" content="website">
 <meta property="og:title" content="Niezidong">
 <meta property="og:url" content="https://blog.newpon.top/page/2/index.html">
 <meta property="og:site_name" content="Niezidong">
+<meta property="og:description" content="Niezidong的技术博客，记录与分享Java、Spring Boot、分布式系统、微服务、高并发架构设计及前端开发实践与思考。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:author" content="John Doe">
+<meta property="article:author" content="Niezidong">
+<meta property="article:tag" content="Niezidong,Java,Spring Boot,分布式,微服务,架构设计,Netty,Redis,技术博客">
 <meta name="twitter:card" content="summary_large_image">
   
   
@@ -79,6 +84,8 @@
   <script  src="/js/color-schema.js" ></script>
   
 
+
+  
 
   
 <meta name="generator" content="Hexo 7.3.0"></head>
@@ -254,7 +261,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2025/11/08/SpringBoot%E6%95%B4%E5%90%88MQ/" target="_self">
         <div>
-          Spring Boot 整合 RocketMQ本文档介绍如何在 Spring Boot 项目中集成和使用 RocketMQ 消息队列。  一、Maven 依赖1.1 引入 RocketMQ 客户端在项目的 pom.xml 文件中添加 RocketMQ 客户端依赖： 12345&lt;dependency&gt;    &lt;groupId&gt;org.apache.rocketmq&lt;/g
+          详细介绍在 Spring Boot 项目中整合 RocketMQ 消息队列，实现异步解耦与流量削峰，涵盖生产端发送与消费端监听的完整配置实战。
         </div>
       </a>
 
@@ -319,7 +326,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2025/11/04/SpringBoot%E6%95%B4%E5%90%88Netty%E6%A1%86%E6%9E%B6/" target="_self">
         <div>
-          一、Maven 依赖123456789101112&lt;dependencies&gt;        &lt;dependency&gt;            &lt;groupId&gt;io.netty&lt;/groupId&gt;            &lt;artifactId&gt;netty-all&lt;/artifactId&gt;            &lt;ver
+          基于 Spring Boot 整合 Netty 高性能网络通信框架，实现自定义协议长连接、心跳检测与断线重连，适用于高并发 IM 即时通讯系统。
         </div>
       </a>
 
@@ -384,7 +391,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2025/11/01/%E9%A1%B5%E9%9D%A2%E5%88%B7%E6%96%B0%E5%90%8Ecookie%E6%B6%88%E5%A4%B1%E7%9A%84bug/" target="_self">
         <div>
-          问题发现今天在用 Cookie 做登录态时遇到一个诡异问题：刷新页面后，Cookie 自动消失；并且再次发起请求也不携带 Cookie。  复现123456789101112export const userApi = &#123;  // 发送登录验证码  sendLoginCode(phone) &#123;    return api.postForm(&#x27;/userLogin/se
+          分析排查前端单页面应用在页面刷新后 Cookie 丢失且后续请求无法携带的问题，深入拆解跨域 CORS、SameSite 属性与凭证模式（withCredentials）设置。
         </div>
       </a>
 
@@ -449,7 +456,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2025/10/30/SpringBoot%E6%95%B4%E5%90%88%E6%94%AF%E4%BB%98%E5%AE%9D/" target="_self">
         <div>
-          一、前提准备在开始整合之前，你需要准备以下配置：  AppID：支付宝应用唯一标识   应用私钥（appPrivateKey）：自己生成，用于签名   支付宝公钥（alipayPublicKey）：从支付宝开放平台获取   应用公钥（appPublicKey）：配置在支付宝后台   异步回调地址（notifyUrl）：支付成功后支付宝通知的接口   支付宝网关地址（沙箱环境为 https://op
+          介绍 Spring Boot 集成支付宝 Easy SDK 的实战流程，涵盖公私钥配置、沙箱环境联调、统一下单接口调用及异步支付回调通知验签处理。
         </div>
       </a>
 
@@ -514,7 +521,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2025/10/25/Nginx%E4%B8%8ECaddy/" target="_self">
         <div>
-          Nginx 与 Caddy：特点、区别与 Docker 部署本文面向常见的反向代理与静态站点场景，对比 Nginx 与 Caddy 的核心特点与差异，并给出在 Windows 环境下使用 Docker 的快速部署示例，帮助你按需选择与落地。  为什么关注 统一入口：反向代理整合多服务与路由。 HTTPS 与安全：证书与重定向策略标准化管理。 性能与稳定：高并发、低资源占用，适合生产环境。 易用性：
+          对比 Nginx 与 Caddy 两大反向代理服务器的核心特性、性能表现与配置差异，并提供基于 Docker 的快速部署与反向代理实战示例。
         </div>
       </a>
 
@@ -581,7 +588,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2025/10/25/Postgresql%E7%89%B9%E7%82%B9%E4%B8%8E%E5%AE%89%E8%A3%85/" target="_self">
         <div>
-          PostgreSQL 特点与安装（Docker）近期项目将采用 PostgreSQL 作为核心数据库。本文概述 PostgreSQL 的关键特性，并给出在 Windows 环境下使用 Docker 的快速安装与常用运维示例，帮助你低成本、可重复地完成本地或测试环境搭建。  为什么选择 PostgreSQL 开源且企业级：遵循 SQL 标准、功能完整、社区活跃。 强一致事务：ACID + MVCC
+          概述企业级开源关系型数据库 PostgreSQL 的关键特性（ACID、MVCC、丰富数据类型与索引），并提供基于 Docker 的快速安装与常用运维指南。
         </div>
       </a>
 
@@ -646,7 +653,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2025/10/18/%E5%88%86%E5%B8%83%E5%BC%8FID%E7%94%9F%E6%88%90%E5%99%A8/" target="_self">
         <div>
-          分布式ID生成本文以一个具体 Java 项目代码为例，解析其核心 ID 生成逻辑及设计亮点。旨在帮助开发者理解如何结合本地缓存和异步更新策略，实现高性能的分布式 ID 生成服务。  项目背景该服务提供 顺序ID 和 无序ID 两种生成方式，支持高并发场景下 ID 快速分配。主要思想是利用本地缓存减少数据库访问压力，通过异步刷新机制实现 ID 区间动态更新，保障 ID 生成的效率与唯一性。  数据库
+          解析高性能分布式 ID 生成服务的核心设计与代码实现，结合本地缓存号段模式与异步更新机制，支持高并发场景下顺序与无序 ID 快速分配。
         </div>
       </a>
 
@@ -711,7 +718,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2025/10/18/%E6%88%91%E7%9A%84%E7%AC%AC%E4%B8%80%E7%AF%87/" target="_self">
         <div>
-          欢迎来到我的博客这是我使用 Hexo 搭建的第一篇文章。经过一番配置与调试，终于把这个博客跑起来了。虽然只是一个简单的开始，但这对我来说，是一个新的起点。  为什么要写博客主要有三个原因：  记录成长：每一次解决问题、完成项目、或者偶然的灵感，都值得被记录下来。写下来不仅能帮助自己复盘，也能帮助后来者少走弯路。  整理思路：当你尝试把知识写出来的时候，你会发现理解会更深。写博客其实就是一种最好的学
+          博主在 Hexo 独立博客上发布的第一篇随笔，记录个人建站经历、写作初衷与未来技术积累的规划与思考。
         </div>
       </a>
 

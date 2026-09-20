@@ -11,24 +11,26 @@
   <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
   <link rel="icon" href="/img/fluid.png">
   
+    <link rel="canonical" href="https://blog.newpon.top/2026/03/20/Jenkins使用/"/>
+  
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="author" content="John Doe">
-  <meta name="keywords" content="">
+  <meta name="author" content="Niezidong">
+  <meta name="keywords" content="Niezidong,Java,Spring Boot,分布式,微服务,架构设计,Netty,Redis,技术博客">
   
-    <meta name="description" content="Jenkins 安装与使用（Docker）本文介绍如何使用 Docker 快速安装 Jenkins，并完成基础配置与常用构建流程。  使用 Docker 安装 Jenkins1）拉取镜像1docker pull jenkins&#x2F;jenkins:lts  2）创建数据卷为了持久化 Jenkins 配置和构建数据，需要创建本地目录： 12mkdir -p &#x2F;opt&#x2F;jenkins_homechmod">
+    <meta name="description" content="详解使用 Docker 快速安装与配置 Jenkins LTS 的全流程，包含数据卷持久化挂载、镜像源加速、常用插件安装与 CI&#x2F;CD 基础构建流水线实战。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Jenkins安装与使用">
 <meta property="og:url" content="https://blog.newpon.top/2026/03/20/Jenkins%E4%BD%BF%E7%94%A8/index.html">
 <meta property="og:site_name" content="Niezidong">
-<meta property="og:description" content="Jenkins 安装与使用（Docker）本文介绍如何使用 Docker 快速安装 Jenkins，并完成基础配置与常用构建流程。  使用 Docker 安装 Jenkins1）拉取镜像1docker pull jenkins&#x2F;jenkins:lts  2）创建数据卷为了持久化 Jenkins 配置和构建数据，需要创建本地目录： 12mkdir -p &#x2F;opt&#x2F;jenkins_homechmod">
+<meta property="og:description" content="详解使用 Docker 快速安装与配置 Jenkins LTS 的全流程，包含数据卷持久化挂载、镜像源加速、常用插件安装与 CI&#x2F;CD 基础构建流水线实战。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-03-20T04:00:00.000Z">
-<meta property="article:modified_time" content="2026-09-15T15:49:07.442Z">
-<meta property="article:author" content="John Doe">
+<meta property="article:modified_time" content="2026-09-20T12:35:52.406Z">
+<meta property="article:author" content="Niezidong">
 <meta property="article:tag" content="Jenkins">
 <meta property="article:tag" content="Docker">
 <meta property="article:tag" content="CI&#x2F;CD">
@@ -92,6 +94,12 @@
   <script  src="/js/color-schema.js" ></script>
   
 
+
+  
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"BlogPosting","headline":"Jenkins安装与使用","description":"详解使用 Docker 快速安装与配置 Jenkins LTS 的全流程，包含数据卷持久化挂载、镜像源加速、常用插件安装与 CI/CD 基础构建流水线实战。","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.newpon.top/2026/03/20/Jenkins%E4%BD%BF%E7%94%A8/"},"datePublished":"2026-03-20T12:00:00+08:00","dateModified":"2026-09-20T20:35:52+08:00","author":{"@type":"Person","name":"Niezidong"},"publisher":{"@type":"Person","name":"Niezidong"}}
+  </script>
+  
 
   
 <meta name="generator" content="Hexo 7.3.0"></head>
@@ -443,7 +451,7 @@
       
         <div class="license-meta-item">
           <div>作者</div>
-          <div>John Doe</div>
+          <div>Niezidong</div>
         </div>
       
       

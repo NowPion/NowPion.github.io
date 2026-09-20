@@ -11,24 +11,26 @@
   <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
   <link rel="icon" href="/img/fluid.png">
   
+    <link rel="canonical" href="https://blog.newpon.top/2026/09/12/SIP软电话全栈架构与实战解析/"/>
+  
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="author" content="John Doe">
-  <meta name="keywords" content="">
+  <meta name="author" content="Niezidong">
+  <meta name="keywords" content="Niezidong,Java,Spring Boot,分布式,微服务,架构设计,Netty,Redis,技术博客">
   
-    <meta name="description" content="刷抖音刷到了别人实现的sip软电话，感觉还挺有意思，就研究了研究 在 SIP Terminal 中落地了一套完整的软电话通信系统：Flutter Android App + Go API + FreeSWITCH + MySQL。 本文将从第一性原理出发，深入浅出地拆解：什么是 SIP？什么是 safarov&#x2F;freeswitch？整套系统的架构如何设计？以及为什么要做出这样的技术选型与架构实现？">
+    <meta name="description" content="从第一性原理深入剖析 SIP 软电话全栈系统架构，涵盖 Flutter 安卓客户端、Go API 服务端、FreeSWITCH 媒体网关及信令交互设计与实战解析。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SIP 软电话全栈架构与实战解析">
 <meta property="og:url" content="https://blog.newpon.top/2026/09/12/SIP%E8%BD%AF%E7%94%B5%E8%AF%9D%E5%85%A8%E6%A0%88%E6%9E%B6%E6%9E%84%E4%B8%8E%E5%AE%9E%E6%88%98%E8%A7%A3%E6%9E%90/index.html">
 <meta property="og:site_name" content="Niezidong">
-<meta property="og:description" content="刷抖音刷到了别人实现的sip软电话，感觉还挺有意思，就研究了研究 在 SIP Terminal 中落地了一套完整的软电话通信系统：Flutter Android App + Go API + FreeSWITCH + MySQL。 本文将从第一性原理出发，深入浅出地拆解：什么是 SIP？什么是 safarov&#x2F;freeswitch？整套系统的架构如何设计？以及为什么要做出这样的技术选型与架构实现？">
+<meta property="og:description" content="从第一性原理深入剖析 SIP 软电话全栈系统架构，涵盖 Flutter 安卓客户端、Go API 服务端、FreeSWITCH 媒体网关及信令交互设计与实战解析。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-09-12T08:00:00.000Z">
-<meta property="article:modified_time" content="2026-09-15T15:49:07.526Z">
-<meta property="article:author" content="John Doe">
+<meta property="article:modified_time" content="2026-09-20T12:36:04.668Z">
+<meta property="article:author" content="Niezidong">
 <meta property="article:tag" content="SIP">
 <meta property="article:tag" content="FreeSWITCH">
 <meta property="article:tag" content="WebRTC">
@@ -96,6 +98,12 @@
   <script  src="/js/color-schema.js" ></script>
   
 
+
+  
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"BlogPosting","headline":"SIP 软电话全栈架构与实战解析","description":"从第一性原理深入剖析 SIP 软电话全栈系统架构，涵盖 Flutter 安卓客户端、Go API 服务端、FreeSWITCH 媒体网关及信令交互设计与实战解析。","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.newpon.top/2026/09/12/SIP%E8%BD%AF%E7%94%B5%E8%AF%9D%E5%85%A8%E6%A0%88%E6%9E%B6%E6%9E%84%E4%B8%8E%E5%AE%9E%E6%88%98%E8%A7%A3%E6%9E%90/"},"datePublished":"2026-09-12T16:00:00+08:00","dateModified":"2026-09-20T20:36:04+08:00","author":{"@type":"Person","name":"Niezidong"},"publisher":{"@type":"Person","name":"Niezidong"}}
+  </script>
+  
 
   
 <meta name="generator" content="Hexo 7.3.0"></head>
@@ -762,7 +770,7 @@
       
         <div class="license-meta-item">
           <div>作者</div>
-          <div>John Doe</div>
+          <div>Niezidong</div>
         </div>
       
       

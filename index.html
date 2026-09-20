@@ -11,20 +11,25 @@
   <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
   <link rel="icon" href="/img/fluid.png">
   
+    <link rel="canonical" href="https://blog.newpon.top"/>
+  
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="author" content="John Doe">
-  <meta name="keywords" content="">
+  <meta name="author" content="Niezidong">
+  <meta name="keywords" content="Niezidong,Java,Spring Boot,分布式,微服务,架构设计,Netty,Redis,技术博客">
   
-    <meta property="og:type" content="website">
+    <meta name="description" content="Niezidong的技术博客，记录与分享Java、Spring Boot、分布式系统、微服务、高并发架构设计及前端开发实践与思考。">
+<meta property="og:type" content="website">
 <meta property="og:title" content="Niezidong">
 <meta property="og:url" content="https://blog.newpon.top/index.html">
 <meta property="og:site_name" content="Niezidong">
+<meta property="og:description" content="Niezidong的技术博客，记录与分享Java、Spring Boot、分布式系统、微服务、高并发架构设计及前端开发实践与思考。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:author" content="John Doe">
+<meta property="article:author" content="Niezidong">
+<meta property="article:tag" content="Niezidong,Java,Spring Boot,分布式,微服务,架构设计,Netty,Redis,技术博客">
 <meta name="twitter:card" content="summary_large_image">
   
   
@@ -79,6 +84,8 @@
   <script  src="/js/color-schema.js" ></script>
   
 
+
+  
 
   
 <meta name="generator" content="Hexo 7.3.0"></head>
@@ -254,7 +261,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2026/09/12/sip%E8%BD%AF%E7%94%B5%E8%AF%9D%E5%AE%9E%E7%8E%B0/" target="_self">
         <div>
-          SIP 软电话实现：从协议到全栈落地本文基于我实际落地的一套 SIP 软电话系统（Flutter 安卓 App + Go API + FreeSWITCH + MySQL + Caddy），先讲清楚 SIP 协议本身是什么，再拆解整个项目的架构、关键链路与踩坑记录。所有内容均来自真实可运行的服务器部署，而非纸上谈兵。   项目源码：github.com&#x2F;NowPion&#x2F;SIP_
+          记录真实可运行的 SIP 软电话系统全栈落地实战，拆解 SIP 协议核心概念（请求方法、状态码）与 Flutter + Go + FreeSWITCH 关键链路踩坑。
         </div>
       </a>
 
@@ -323,7 +330,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2026/09/12/SIP%E8%BD%AF%E7%94%B5%E8%AF%9D%E5%85%A8%E6%A0%88%E6%9E%B6%E6%9E%84%E4%B8%8E%E5%AE%9E%E6%88%98%E8%A7%A3%E6%9E%90/" target="_self">
         <div>
-          刷抖音刷到了别人实现的sip软电话，感觉还挺有意思，就研究了研究 在 SIP Terminal 中落地了一套完整的软电话通信系统：Flutter Android App + Go API + FreeSWITCH + MySQL。 本文将从第一性原理出发，深入浅出地拆解：什么是 SIP？什么是 safarov/freeswitch？整套系统的架构如何设计？以及为什么要做出这样的技术选型与架构实现？
+          从第一性原理深入剖析 SIP 软电话全栈系统架构，涵盖 Flutter 安卓客户端、Go API 服务端、FreeSWITCH 媒体网关及信令交互设计与实战解析。
         </div>
       </a>
 
@@ -396,7 +403,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2026/09/10/AI%E8%B0%83%E7%94%A8JMeter%E5%8E%8B%E6%B5%8B/" target="_self">
         <div>
-          传统的性能测试工具链是出了名的重。 尤其是 Apache JMeter，每次为了测一个接口，先得打开启动奇慢的 Java Swing GUI 界面，手动去建线程组、HTTP 请求、添加 HTTP 信息头管理器、Cookie 管理器、配置察看结果树和聚合报告。改一个参数就要一层层展开树形目录去改，哪怕是在命令行用非 GUI 模式跑，生成出来的要么是几百兆的原始 JTL，要么是生成一个包含成百上千个
+          深度重构并开源 jmeter-mcp-server，基于模型上下文协议（MCP）将 Apache JMeter 改造为 AI 原生自动化压测服务，打通 AI 与性能测试壁垒。
         </div>
       </a>
 
@@ -465,7 +472,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2026/05/26/Ai%E8%AF%BB%E5%8F%96%E5%BE%AE%E4%BF%A1%E5%BC%80%E5%8F%91%E8%80%85%E5%B7%A5%E5%85%B7/" target="_self">
         <div>
-          微信小程序这个调试链路是真的烦，尤其是 uniapp 项目。 AI 看得到代码，但是看不到微信开发者工具里的页面、data、console、截图和编译结果。你让它改页面，它只能靠猜；你让它排查 bug，它还得让你一遍遍复制日志，整个过程就很笨。 所以这里做了一个 uniapp-wechat-mcp，把微信开发者工具的 CLI 和 miniprogram-automator SDK 封装成 MCP
+          介绍 uniapp-wechat-mcp 开源工具，基于微信开发者工具 CLI 与 miniprogram-automator 封装为 MCP Server，让 AI 工具直接读取、控制与调试微信小程序。
         </div>
       </a>
 
@@ -534,7 +541,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2026/05/22/%E5%8F%8D%E4%BB%A3kiro/" target="_self">
         <div>
-          Kiro 的这个ui是真几把难用，而且还很卡，就想着把Kiro的模型反代出来 这里使用的是 Kiro-Go： GitHub 地址：https://github.com/Quorinex/Kiro-Go Kiro-Go 的核心能力：  支持 OpenAI /v1/chat/completions 接口 支持 Anthropic /v1/messages 接口 支持多账号池与轮询负载均衡 支持 SSE
+          使用开源工具 Kiro-Go 反代 Kiro，暴露 OpenAI 与 Anthropic 兼容接口，支持多账号池轮询、SSE 流式响应及 Docker 快速容器化部署。
         </div>
       </a>
 
@@ -603,7 +610,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2026/03/30/SpringBoot%E6%89%AB%E7%A0%81%E7%99%BB%E5%BD%95/" target="_self">
         <div>
-          Spring Boot 实现扫码登录扫码登录是现代应用中常见的身份验证方式，本文将详细介绍基于 Spring Boot 3 的完整实现方案，包括二维码生成、状态管理、确认流程等核心环节。  一、Maven 依赖1.1 核心依赖引入（pom.xml）在项目的 pom.xml 文件中添加依赖： 1234567891011121314151617181920212223&lt;!-- SpringWeb
+          基于 Spring Boot 3 与 Redis 实现安全的二维码扫码登录方案，包含二维码生成、轮询/状态管理、移动端确认授权与登录态同步全流程。
         </div>
       </a>
 
@@ -668,7 +675,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2026/03/20/Jenkins%E4%BD%BF%E7%94%A8/" target="_self">
         <div>
-          Jenkins 安装与使用（Docker）本文介绍如何使用 Docker 快速安装 Jenkins，并完成基础配置与常用构建流程。  使用 Docker 安装 Jenkins1）拉取镜像1docker pull jenkins/jenkins:lts  2）创建数据卷为了持久化 Jenkins 配置和构建数据，需要创建本地目录： 12mkdir -p /opt/jenkins_homechmod
+          详解使用 Docker 快速安装与配置 Jenkins LTS 的全流程，包含数据卷持久化挂载、镜像源加速、常用插件安装与 CI/CD 基础构建流水线实战。
         </div>
       </a>
 
@@ -733,7 +740,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2026/02/16/%E6%8E%A5%E5%8F%A3%E5%8A%A0%E5%AF%86%E8%AE%BE%E8%AE%A1/" target="_self">
         <div>
-          整体设计思路Mars Admin 的接口加密采用 RSA + AES-GCM 混合加密 方案，形成”前端获取配置 → 请求加密 → 后端解密 → 后端加密响应 → 前端解密”的完整闭环。 为什么用混合加密？  RSA（非对称加密）：安全性高，但加密大数据速度慢，适合加密少量数据（如密码字段、AES 密钥） AES-GCM（对称加密）：速度快，适合加密大量响应数据，且 GCM 模式自带完整性校验
+          深入解析 Mars Admin 的接口安全设计，采用 RSA + AES-GCM 混合加密方案，实现前端请求加密、后端解密与敏感响应数据加密的完整闭环。
         </div>
       </a>
 
@@ -802,7 +809,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2025/12/01/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E5%8F%A3%E6%8B%A6%E6%88%AA%E9%97%AE%E9%A2%98/" target="_self">
         <div>
-          问题发现早上检查服务器时发现他妈的数据库被黑了，排查后才想起防火墙端口忘记关闭。立即登录服务器关闭了防火墙对应端口 但远程测试时发现：端口居然还能连上！  问题原因 我的数据库服务是通过 Docker 启动的，这正是问题的根源。 Docker 默认把所有转发到容器的流量全部放行，无条件 ACCEPT Docker 的 iptables 行为Docker 默认会在系统 iptables 中自动添加
+          复盘排查 Docker 容器端口映射绕过系统防火墙（iptables 规则链）的安全事故，解析底层网络数据包转发机制并给出正确的防火墙防护策略。
         </div>
       </a>
 
@@ -869,7 +876,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2025/11/12/Redis%20+%20AOP%20%E5%AE%9E%E7%8E%B0%E7%9A%84%E6%8E%A5%E5%8F%A3%E9%99%90%E6%B5%81/" target="_self">
         <div>
-          一、前言在高并发系统中，为了防止接口被恶意频繁访问、刷接口或突发流量导致系统崩溃，我们需要 限流（Rate Limiting）。本文将介绍如何通过 Redis + AOP 在 Spring Boot 项目中实现轻量级、可复用的接口限流功能。 相比使用 Guava 或令牌桶算法的单机实现，Redis 版本支持 分布式限流，非常适合多实例部署场景。  二、Maven 依赖12345&lt;depen
+          介绍在 Spring Boot 项目中利用 Redis 与自定义 AOP 注解实现分布式接口限流的完整方案，有效防止高并发刷接口与突发流量导致系统崩溃。
         </div>
       </a>
 

@@ -11,24 +11,26 @@
   <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
   <link rel="icon" href="/img/fluid.png">
   
+    <link rel="canonical" href="https://blog.newpon.top/2025/10/25/Nginx与Caddy/"/>
+  
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="author" content="John Doe">
-  <meta name="keywords" content="">
+  <meta name="author" content="Niezidong">
+  <meta name="keywords" content="Niezidong,Java,Spring Boot,分布式,微服务,架构设计,Netty,Redis,技术博客">
   
-    <meta name="description" content="Nginx 与 Caddy：特点、区别与 Docker 部署本文面向常见的反向代理与静态站点场景，对比 Nginx 与 Caddy 的核心特点与差异，并给出在 Windows 环境下使用 Docker 的快速部署示例，帮助你按需选择与落地。  为什么关注 统一入口：反向代理整合多服务与路由。 HTTPS 与安全：证书与重定向策略标准化管理。 性能与稳定：高并发、低资源占用，适合生产环境。 易用性：">
+    <meta name="description" content="对比 Nginx 与 Caddy 两大反向代理服务器的核心特性、性能表现与配置差异，并提供基于 Docker 的快速部署与反向代理实战示例。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Nginx与Caddy">
 <meta property="og:url" content="https://blog.newpon.top/2025/10/25/Nginx%E4%B8%8ECaddy/index.html">
 <meta property="og:site_name" content="Niezidong">
-<meta property="og:description" content="Nginx 与 Caddy：特点、区别与 Docker 部署本文面向常见的反向代理与静态站点场景，对比 Nginx 与 Caddy 的核心特点与差异，并给出在 Windows 环境下使用 Docker 的快速部署示例，帮助你按需选择与落地。  为什么关注 统一入口：反向代理整合多服务与路由。 HTTPS 与安全：证书与重定向策略标准化管理。 性能与稳定：高并发、低资源占用，适合生产环境。 易用性：">
+<meta property="og:description" content="对比 Nginx 与 Caddy 两大反向代理服务器的核心特性、性能表现与配置差异，并提供基于 Docker 的快速部署与反向代理实战示例。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-10-25T08:56:18.000Z">
-<meta property="article:modified_time" content="2026-09-15T15:49:07.463Z">
-<meta property="article:author" content="John Doe">
+<meta property="article:modified_time" content="2026-09-20T12:35:54.453Z">
+<meta property="article:author" content="Niezidong">
 <meta property="article:tag" content="Docker">
 <meta property="article:tag" content="Nginx">
 <meta property="article:tag" content="Caddy">
@@ -93,6 +95,12 @@
   <script  src="/js/color-schema.js" ></script>
   
 
+
+  
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"BlogPosting","headline":"Nginx与Caddy","description":"对比 Nginx 与 Caddy 两大反向代理服务器的核心特性、性能表现与配置差异，并提供基于 Docker 的快速部署与反向代理实战示例。","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.newpon.top/2025/10/25/Nginx%E4%B8%8ECaddy/"},"datePublished":"2025-10-25T16:56:18+08:00","dateModified":"2026-09-20T20:35:54+08:00","author":{"@type":"Person","name":"Niezidong"},"publisher":{"@type":"Person","name":"Niezidong"}}
+  </script>
+  
 
   
 <meta name="generator" content="Hexo 7.3.0"></head>
@@ -468,7 +476,7 @@
       
         <div class="license-meta-item">
           <div>作者</div>
-          <div>John Doe</div>
+          <div>Niezidong</div>
         </div>
       
       

@@ -11,24 +11,26 @@
   <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
   <link rel="icon" href="/img/fluid.png">
   
+    <link rel="canonical" href="https://blog.newpon.top/2025/11/12/Redis + AOP 实现的接口限流/"/>
+  
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="author" content="John Doe">
-  <meta name="keywords" content="">
+  <meta name="author" content="Niezidong">
+  <meta name="keywords" content="Niezidong,Java,Spring Boot,分布式,微服务,架构设计,Netty,Redis,技术博客">
   
-    <meta name="description" content="一、前言在高并发系统中，为了防止接口被恶意频繁访问、刷接口或突发流量导致系统崩溃，我们需要 限流（Rate Limiting）。本文将介绍如何通过 Redis + AOP 在 Spring Boot 项目中实现轻量级、可复用的接口限流功能。 相比使用 Guava 或令牌桶算法的单机实现，Redis 版本支持 分布式限流，非常适合多实例部署场景。  二、Maven 依赖12345&lt;depen">
+    <meta name="description" content="介绍在 Spring Boot 项目中利用 Redis 与自定义 AOP 注解实现分布式接口限流的完整方案，有效防止高并发刷接口与突发流量导致系统崩溃。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Redis + AOP 实现的接口限流">
 <meta property="og:url" content="https://blog.newpon.top/2025/11/12/Redis%20+%20AOP%20%E5%AE%9E%E7%8E%B0%E7%9A%84%E6%8E%A5%E5%8F%A3%E9%99%90%E6%B5%81/index.html">
 <meta property="og:site_name" content="Niezidong">
-<meta property="og:description" content="一、前言在高并发系统中，为了防止接口被恶意频繁访问、刷接口或突发流量导致系统崩溃，我们需要 限流（Rate Limiting）。本文将介绍如何通过 Redis + AOP 在 Spring Boot 项目中实现轻量级、可复用的接口限流功能。 相比使用 Guava 或令牌桶算法的单机实现，Redis 版本支持 分布式限流，非常适合多实例部署场景。  二、Maven 依赖12345&lt;depen">
+<meta property="og:description" content="介绍在 Spring Boot 项目中利用 Redis 与自定义 AOP 注解实现分布式接口限流的完整方案，有效防止高并发刷接口与突发流量导致系统崩溃。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-11-12T12:08:55.000Z">
-<meta property="article:modified_time" content="2026-09-15T15:49:07.505Z">
-<meta property="article:author" content="John Doe">
+<meta property="article:modified_time" content="2026-09-20T12:36:02.582Z">
+<meta property="article:author" content="Niezidong">
 <meta property="article:tag" content="Spring Boot">
 <meta property="article:tag" content="Redis">
 <meta property="article:tag" content="AOP">
@@ -92,6 +94,12 @@
   <script  src="/js/color-schema.js" ></script>
   
 
+
+  
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"BlogPosting","headline":"Redis + AOP 实现的接口限流","description":"介绍在 Spring Boot 项目中利用 Redis 与自定义 AOP 注解实现分布式接口限流的完整方案，有效防止高并发刷接口与突发流量导致系统崩溃。","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.newpon.top/2025/11/12/Redis%20+%20AOP%20%E5%AE%9E%E7%8E%B0%E7%9A%84%E6%8E%A5%E5%8F%A3%E9%99%90%E6%B5%81/"},"datePublished":"2025-11-12T20:08:55+08:00","dateModified":"2026-09-20T20:36:02+08:00","author":{"@type":"Person","name":"Niezidong"},"publisher":{"@type":"Person","name":"Niezidong"}}
+  </script>
+  
 
   
 <meta name="generator" content="Hexo 7.3.0"></head>
@@ -297,8 +305,7 @@
             
               <div class="markdown-body">
                 
-                <hr>
-<h1 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h1><p>在高并发系统中，为了防止接口被恶意频繁访问、刷接口或突发流量导致系统崩溃，我们需要 <strong>限流（Rate Limiting）</strong>。本文将介绍如何通过 <strong>Redis + AOP</strong> 在 Spring Boot 项目中实现轻量级、可复用的接口限流功能。</p>
+                <h1 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h1><p>在高并发系统中，为了防止接口被恶意频繁访问、刷接口或突发流量导致系统崩溃，我们需要 <strong>限流（Rate Limiting）</strong>。本文将介绍如何通过 <strong>Redis + AOP</strong> 在 Spring Boot 项目中实现轻量级、可复用的接口限流功能。</p>
 <p>相比使用 Guava 或令牌桶算法的单机实现，Redis 版本支持 <strong>分布式限流</strong>，非常适合多实例部署场景。</p>
 <hr>
 <h1 id="二、Maven-依赖"><a href="#二、Maven-依赖" class="headerlink" title="二、Maven 依赖"></a>二、Maven 依赖</h1><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-data-redis<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><br></code></pre></td></tr></table></figure>
@@ -382,7 +389,7 @@
       
         <div class="license-meta-item">
           <div>作者</div>
-          <div>John Doe</div>
+          <div>Niezidong</div>
         </div>
       
       
