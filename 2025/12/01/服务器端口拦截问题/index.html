@@ -21,21 +21,22 @@
   <meta name="author" content="Niezidong">
   <meta name="keywords" content="Niezidong,Java,Spring Boot,分布式,微服务,架构设计,Netty,Redis,技术博客">
   
-    <meta name="description" content="复盘排查 Docker 容器端口映射绕过系统防火墙（iptables 规则链）的安全事故，解析底层网络数据包转发机制并给出正确的防火墙防护策略。">
+    <meta name="description" content="复盘排查 Docker 容器端口映射绕过系统防火墙（iptables 规则链）的安全事故，解析底层网络数据包转发机制，并给出四种从最小改动到最彻底的防火墙防护方案。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Docker 绕过防火墙的端口映射问题">
 <meta property="og:url" content="https://blog.newpon.top/2025/12/01/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E5%8F%A3%E6%8B%A6%E6%88%AA%E9%97%AE%E9%A2%98/index.html">
 <meta property="og:site_name" content="Niezidong">
-<meta property="og:description" content="复盘排查 Docker 容器端口映射绕过系统防火墙（iptables 规则链）的安全事故，解析底层网络数据包转发机制并给出正确的防火墙防护策略。">
+<meta property="og:description" content="复盘排查 Docker 容器端口映射绕过系统防火墙（iptables 规则链）的安全事故，解析底层网络数据包转发机制，并给出四种从最小改动到最彻底的防火墙防护方案。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://pub-a57df07920d249cb9197910fe28b84a5.r2.dev/PicGo/f90c22081df0e564dc0abecf99e3002a.png">
 <meta property="article:published_time" content="2025-12-01T07:14:34.000Z">
-<meta property="article:modified_time" content="2026-09-20T12:36:37.714Z">
+<meta property="article:modified_time" content="2026-10-05T07:34:16.387Z">
 <meta property="article:author" content="Niezidong">
 <meta property="article:tag" content="Docker">
 <meta property="article:tag" content="安全">
 <meta property="article:tag" content="运维">
 <meta property="article:tag" content="iptables">
+<meta property="article:tag" content="UFW">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://pub-a57df07920d249cb9197910fe28b84a5.r2.dev/PicGo/f90c22081df0e564dc0abecf99e3002a.png">
   
@@ -100,7 +101,7 @@
 
   
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"BlogPosting","headline":"Docker 绕过防火墙的端口映射问题","description":"复盘排查 Docker 容器端口映射绕过系统防火墙（iptables 规则链）的安全事故，解析底层网络数据包转发机制并给出正确的防火墙防护策略。","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.newpon.top/2025/12/01/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E5%8F%A3%E6%8B%A6%E6%88%AA%E9%97%AE%E9%A2%98/"},"datePublished":"2025-12-01T15:14:34+08:00","dateModified":"2026-09-20T20:36:37+08:00","author":{"@type":"Person","name":"Niezidong"},"publisher":{"@type":"Person","name":"Niezidong"}}
+  {"@context":"https://schema.org","@type":"BlogPosting","headline":"Docker 绕过防火墙的端口映射问题","description":"复盘排查 Docker 容器端口映射绕过系统防火墙（iptables 规则链）的安全事故，解析底层网络数据包转发机制，并给出四种从最小改动到最彻底的防火墙防护方案。","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.newpon.top/2025/12/01/%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E5%8F%A3%E6%8B%A6%E6%88%AA%E9%97%AE%E9%A2%98/"},"datePublished":"2025-12-01T15:14:34+08:00","dateModified":"2026-10-05T15:34:16+08:00","author":{"@type":"Person","name":"Niezidong"},"publisher":{"@type":"Person","name":"Niezidong"}}
   </script>
   
 
@@ -255,7 +256,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          682 字
+          1.9k 字
         
       </span>
     
@@ -266,7 +267,7 @@
         
         
         
-          6 分钟
+          16 分钟
         
       </span>
     
@@ -308,42 +309,130 @@
             
               <div class="markdown-body">
                 
-                <h2 id="问题发现"><a href="#问题发现" class="headerlink" title="问题发现"></a>问题发现</h2><p>早上检查服务器时发现他妈的数据库被黑了，排查后才想起防火墙端口忘记关闭。立即登录服务器关闭了防火墙对应端口</p>
+                <h2 id="问题发现"><a href="#问题发现" class="headerlink" title="问题发现"></a>问题发现</h2><p>早上检查服务器时发现他妈的数据库被黑了，排查后才想起防火墙端口忘记关闭。立即登录服务器关闭了防火墙对应端口。</p>
 <p>但远程测试时发现：<strong>端口居然还能连上！</strong></p>
 <hr>
 <h2 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h2><p><img src="https://pub-a57df07920d249cb9197910fe28b84a5.r2.dev/PicGo/f90c22081df0e564dc0abecf99e3002a.png" srcset="/img/loading.gif" lazyload alt="Docker 网络流量示意图"></p>
 <p>我的数据库服务是通过 Docker 启动的，这正是问题的根源。</p>
-<p>Docker 默认把所有转发到容器的流量全部放行，无条件 ACCEPT</p>
+<p>Docker 默认把所有转发到容器的流量全部放行，无条件 ACCEPT。</p>
 <h3 id="Docker-的-iptables-行为"><a href="#Docker-的-iptables-行为" class="headerlink" title="Docker 的 iptables 行为"></a>Docker 的 iptables 行为</h3><p>Docker 默认会在系统 iptables 中自动添加 NAT&#x2F;FORWARD 规则，将映射端口直接放行。外部流量会绕过 INPUT 链，因此即使防火墙（UFW）没有开放端口，也能访问容器服务。</p>
-<p>当 Docker 启动容器并映射端口（如 <code>-p 3307:3306</code>）时，会自动执行以下操作：</p>
+<p>当 Docker 启动容器并映射端口（如 <code>-p 3307:3306</code>，等价于 <code>-p 0.0.0.0:3307:3306</code>）时，会自动执行以下操作：</p>
 <ol>
-<li>在 NAT 表的 <code>PREROUTING</code> 链添加 DNAT 规则，将宿主机端口转发到容器端口</li>
-<li>在 <code>FORWARD</code> 链添加 ACCEPT 规则，放行转发流量</li>
+<li>在 <code>nat/PREROUTING</code> 链挂上 <code>DOCKER</code> 跳转，再由 <code>nat/DOCKER</code> 链添加 DNAT 规则，把宿主机端口转发到容器 IP 端口</li>
+<li>在 <code>filter/FORWARD</code> 链插入 <code>DOCKER-USER</code> 和 <code>DOCKER</code> 跳转，由 <code>filter/DOCKER</code> 链添加 ACCEPT 规则，放行转发流量</li>
 </ol>
+<p>实测一下，一眼就能看出来：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ <span class="hljs-built_in">sudo</span> iptables -t nat -L DOCKER -n<br>Chain DOCKER (2 references)<br>num  target     prot opt <span class="hljs-built_in">source</span>      destination<br>1    RETURN     all  --  0.0.0.0/0   0.0.0.0/0<br>2    DNAT       tcp  --  0.0.0.0/0   0.0.0.0/0    tcp dpt:3307 to:172.17.0.2:3306<br><br>$ <span class="hljs-built_in">sudo</span> iptables -L DOCKER -n<br>Chain DOCKER (1 references)<br>num  target     prot opt <span class="hljs-built_in">source</span>      destination<br>1    ACCEPT     tcp  --  0.0.0.0/0   172.17.0.2   tcp dpt:3306<br><br>$ <span class="hljs-built_in">sudo</span> iptables -L FORWARD -n --line-numbers | <span class="hljs-built_in">head</span> -5<br>Chain FORWARD (policy DROP)<br>num  target        prot opt <span class="hljs-built_in">source</span>      destination<br>1    DOCKER-USER   all  --  0.0.0.0/0   0.0.0.0/0<br>2    DOCKER-ISOLATION-STAGE-1  all  --  0.0.0.0/0  0.0.0.0/0<br>3    ACCEPT        all  --  0.0.0.0/0   0.0.0.0/0    ctstate RELATED,ESTABLISHED<br>4    DOCKER        all  --  0.0.0.0/0   0.0.0.0/0<br></code></pre></td></tr></table></figure>
+
+<p>注意 <code>FORWARD</code> 链的 policy 可能是 <code>DROP</code>，但第 4 条 <code>DOCKER</code> 跳转里的 <code>ACCEPT</code> 已经把到容器的流量无条件放行了——<strong>这正是”防火墙看着是关的，端口却是开的”的根因</strong>。</p>
 <h3 id="流量路径分析"><a href="#流量路径分析" class="headerlink" title="流量路径分析"></a>流量路径分析</h3><p>UFW 规则作用于 <code>filter/INPUT</code> 链，而外部访问 Docker 映射端口时，流量走的是：</p>
 <figure class="highlight delphi"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs delphi">外网 → PREROUTING (DNAT) → <span class="hljs-keyword">FORWARD</span> → 容器<br></code></pre></td></tr></table></figure>
 
+<p>报文在 <code>PREROUTING</code> 被 DNAT 之后，目的地址已经变成了容器 IP（<code>172.17.0.2</code>），不再是宿主机本机地址。内核一看目的地址不是自己，就判定为「转发」，于是走 <code>FORWARD</code> 链而不是 <code>INPUT</code> 链。</p>
+<p>整个 iptables 链的跳转结构长这样，对照着看就清楚了：</p>
+<div style="margin:1.5rem 0;overflow-x:auto;">
+<svg viewBox="0 0 680 496" width="100%" role="img" xmlns="http://www.w3.org/2000/svg">
+<title>Docker 端口映射在 iptables 中的链跳转结构</title>
+<desc>报文进入 nat/PREROUTING 后做路由判定：目的地址为本机则走 filter/INPUT，UFW 规则生效；被 DNAT 成容器 IP 则走 filter/FORWARD，依次经过 DOCKER-USER 和 DOCKER 链，最终到达容器。</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<rect x="240" y="30" width="200" height="44" rx="8" fill="#0C447C" stroke="#85B7EB" stroke-width="0.5"/>
+<text x="340" y="52" text-anchor="middle" dominant-baseline="central" fill="#B5D4F4" font-size="13" font-weight="500">nat / PREROUTING</text>
+<rect x="240" y="98" width="200" height="52" rx="8" fill="#633806" stroke="#EF9F27" stroke-width="0.5"/>
+<text x="340" y="116" text-anchor="middle" dominant-baseline="central" fill="#FAC775" font-size="13" font-weight="500">路由判定</text>
+<text x="340" y="134" text-anchor="middle" dominant-baseline="central" fill="#EF9F27" font-size="12">目的地址是本机吗</text>
+<rect x="40" y="190" width="220" height="52" rx="8" fill="#085041" stroke="#5DCAA5" stroke-width="0.5"/>
+<text x="150" y="208" text-anchor="middle" dominant-baseline="central" fill="#9FE1CB" font-size="13" font-weight="500">filter / INPUT</text>
+<text x="150" y="226" text-anchor="middle" dominant-baseline="central" fill="#5DCAA5" font-size="12">UFW 规则在此生效</text>
+<rect x="420" y="190" width="220" height="52" rx="8" fill="#0C447C" stroke="#85B7EB" stroke-width="0.5"/>
+<text x="530" y="208" text-anchor="middle" dominant-baseline="central" fill="#B5D4F4" font-size="13" font-weight="500">filter / FORWARD</text>
+<text x="530" y="226" text-anchor="middle" dominant-baseline="central" fill="#85B7EB" font-size="12">转发流量走这里</text>
+<rect x="420" y="268" width="220" height="52" rx="8" fill="#085041" stroke="#5DCAA5" stroke-width="0.5"/>
+<text x="530" y="286" text-anchor="middle" dominant-baseline="central" fill="#9FE1CB" font-size="13" font-weight="500">DOCKER-USER</text>
+<text x="530" y="304" text-anchor="middle" dominant-baseline="central" fill="#5DCAA5" font-size="12">自定义白名单插这里</text>
+<rect x="420" y="346" width="220" height="52" rx="8" fill="#791F1F" stroke="#F09595" stroke-width="0.5"/>
+<text x="530" y="364" text-anchor="middle" dominant-baseline="central" fill="#F7C1C1" font-size="13" font-weight="500">DOCKER</text>
+<text x="530" y="382" text-anchor="middle" dominant-baseline="central" fill="#F09595" font-size="12">自动 ACCEPT（绕过点）</text>
+<rect x="420" y="424" width="220" height="52" rx="8" fill="#0C447C" stroke="#85B7EB" stroke-width="0.5"/>
+<text x="530" y="442" text-anchor="middle" dominant-baseline="central" fill="#B5D4F4" font-size="13" font-weight="500">容器</text>
+<text x="530" y="460" text-anchor="middle" dominant-baseline="central" fill="#85B7EB" font-size="12">172.17.0.2:3306</text>
+<line x1="340" y1="74" x2="340" y2="94" stroke="#85B7EB" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M340 150 L340 168 L150 168 L150 186" fill="none" stroke="#5DCAA5" stroke-width="1.5" marker-end="url(#arrow)"/>
+<path d="M340 150 L340 168 L530 168 L530 186" fill="none" stroke="#85B7EB" stroke-width="1.5" marker-end="url(#arrow)"/>
+<text x="196" y="160" text-anchor="middle" dominant-baseline="central" fill="#5DCAA5" font-size="12">是</text>
+<text x="470" y="160" text-anchor="middle" dominant-baseline="central" fill="#85B7EB" font-size="12">否（DNAT 命中）</text>
+<line x1="530" y1="242" x2="530" y2="264" stroke="#85B7EB" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="530" y1="320" x2="530" y2="342" stroke="#85B7EB" stroke-width="1.5" marker-end="url(#arrow)"/>
+<line x1="530" y1="398" x2="530" y2="420" stroke="#85B7EB" stroke-width="1.5" marker-end="url(#arrow)"/>
+</svg>
+</div>
+
 <p>由于流量不经过 INPUT 链，所以即使 UFW 禁止了端口，Docker 映射的端口仍然可以被外部访问。</p>
+<p>注意 <code>DOCKER-USER</code> 链在 <code>FORWARD</code> 里的位置排在 <code>DOCKER</code> 链<strong>之前</strong>——这正是它能用来做白名单的原因：你写的 <code>DROP</code> 规则会先于 Docker 自动生成的 <code>ACCEPT</code> 被命中。</p>
+<h3 id="为什么绑定-127-0-0-1-就不一样"><a href="#为什么绑定-127-0-0-1-就不一样" class="headerlink" title="为什么绑定 127.0.0.1 就不一样"></a>为什么绑定 127.0.0.1 就不一样</h3><p>如果映射写成 <code>-p 127.0.0.1:3307:3306</code>，情况完全不同：</p>
+<ol>
+<li>DNAT 规则带上了 <code>-d 127.0.0.1/32</code> 的匹配条件，<strong>公网来的报文目的地址是你的公网 IP，匹配不上任何 DNAT 规则</strong></li>
+<li>匹配不上 DNAT，报文就还是「发给宿主机本机端口」的报文，正常走 <code>INPUT</code> 链，UFW 规则生效</li>
+<li>退一步说，就算 UFW 放行了，<code>docker-proxy</code> 也只在 <code>127.0.0.1:3307</code> 上监听，公网 IP 上压根没有监听进程，照样连不上</li>
+</ol>
+<p>这就是后面方案一为什么是首选的原因——<strong>一行参数，零副作用</strong>。</p>
 <hr>
-<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><h3 id="方案一：禁止-Docker-自动管理-iptables（推荐）"><a href="#方案一：禁止-Docker-自动管理-iptables（推荐）" class="headerlink" title="方案一：禁止 Docker 自动管理 iptables（推荐）"></a>方案一：禁止 Docker 自动管理 iptables（推荐）</h3><p>编辑 Docker 配置文件：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> vim /etc/docker/daemon.json<br></code></pre></td></tr></table></figure>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><h3 id="方案一：端口只绑回环地址（推荐，最小改动）"><a href="#方案一：端口只绑回环地址（推荐，最小改动）" class="headerlink" title="方案一：端口只绑回环地址（推荐，最小改动）"></a>方案一：端口只绑回环地址（推荐，最小改动）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker run -d --name mysql \<br>  -p 127.0.0.1:3307:3306 \<br>  mysql:8<br></code></pre></td></tr></table></figure>
 
-<p>添加以下内容：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;iptables&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+<p>docker-compose 里同理：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">services:</span><br>  <span class="hljs-attr">mysql:</span><br>    <span class="hljs-attr">image:</span> <span class="hljs-string">mysql:8</span><br>    <span class="hljs-attr">ports:</span><br>      <span class="hljs-bullet">-</span> <span class="hljs-string">&quot;127.0.0.1:3307:3306&quot;</span><br></code></pre></td></tr></table></figure>
 
-<p>重启 Docker 服务：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> systemctl restart docker<br></code></pre></td></tr></table></figure>
+<p>对外访问统一走本机的反向代理（Nginx &#x2F; Caddy）转发到 <code>127.0.0.1:3307</code>，代理层再做鉴权和 IP 白名单。容器完全不出现在公网可达面里，这是最干净的做法。</p>
+<h3 id="方案二：在-DOCKER-USER-链上做白名单（推荐）"><a href="#方案二：在-DOCKER-USER-链上做白名单（推荐）" class="headerlink" title="方案二：在 DOCKER-USER 链上做白名单（推荐）"></a>方案二：在 DOCKER-USER 链上做白名单（推荐）</h3><p><code>DOCKER-USER</code> 是 Docker 官方预留的自定义链，挂在 <code>FORWARD</code> 链的<strong>最前面</strong>，优先级高于 Docker 自己写的 <code>ACCEPT</code> 规则，是放自定义规则的唯一正确位置。</p>
+<p>只放行内网网段，其余全部丢弃：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 注意：DOCKER-USER 链末尾有一条 -j RETURN，规则必须插在它前面</span><br><span class="hljs-built_in">sudo</span> iptables -I DOCKER-USER -p tcp --dport 3306 ! -s 10.0.0.0/8 -j DROP<br><br><span class="hljs-comment"># 查看结果</span><br><span class="hljs-built_in">sudo</span> iptables -L DOCKER-USER -n --line-numbers<br></code></pre></td></tr></table></figure>
 
-<p>这样防火墙（UFW、iptables）就能真正掌控端口访问，Docker 不再绕过 INPUT 链。</p>
-<blockquote>
-<p>⚠️ <strong>注意</strong>：禁用后需要手动配置容器网络的 NAT 规则，容器间通信和外部访问都需要自行管理。</p>
-</blockquote>
-<h3 id="方案二：使用-UFW-Docker-插件"><a href="#方案二：使用-UFW-Docker-插件" class="headerlink" title="方案二：使用 UFW-Docker 插件"></a>方案二：使用 UFW-Docker 插件</h3><p>安装 ufw-docker 脚本，让 UFW 能正确管理 Docker 端口：</p>
+<p>因为 DNAT 只改目的地址、不改源地址，所以这里看到的 <code>-s</code> 就是<strong>真实客户端 IP</strong>，按 IP 过滤是可靠的。</p>
+<p>有一点必须注意：<strong>手工加的 iptables 规则重启后会丢</strong>。Docker 重启时不会清空 <code>DOCKER-USER</code> 链，但宿主机重启后规则就没了，需要持久化：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> apt install iptables-persistent<br><span class="hljs-built_in">sudo</span> netfilter-persistent save<br></code></pre></td></tr></table></figure>
+
+<p>或者写个 systemd unit 在 <code>docker.service</code> 之后执行这段 <code>iptables</code> 命令。</p>
+<h3 id="方案三：使用-UFW-Docker-插件"><a href="#方案三：使用-UFW-Docker-插件" class="headerlink" title="方案三：使用 UFW-Docker 插件"></a>方案三：使用 UFW-Docker 插件</h3><p>不想手写 iptables 的话，用社区脚本让 UFW 能正确管理 Docker 端口：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> wget -O /usr/local/bin/ufw-docker \<br>  https://github.com/chaifeng/ufw-docker/raw/master/ufw-docker<br><span class="hljs-built_in">sudo</span> <span class="hljs-built_in">chmod</span> +x /usr/local/bin/ufw-docker<br><span class="hljs-built_in">sudo</span> ufw-docker install<br><span class="hljs-built_in">sudo</span> systemctl restart ufw<br></code></pre></td></tr></table></figure>
 
 <p>允许特定 IP 访问容器端口：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> ufw-docker allow mysql 3306/tcp 192.168.1.100<br></code></pre></td></tr></table></figure>
 
+<p>装完记得校验规则是否真的落到了 <code>DOCKER-USER</code> 链里：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> ufw-docker check<br><span class="hljs-built_in">sudo</span> iptables -L DOCKER-USER -n<br></code></pre></td></tr></table></figure>
+
+<p><strong>另外</strong>：<code>ufw-docker</code> 和 <code>iptables: false</code> 不能同时用，如果之前改过 <code>daemon.json</code>，要先把 <code>&quot;iptables&quot;: false</code> 删掉再重启 Docker。</p>
+<h3 id="方案四：关闭-Docker-的-iptables-管理（不推荐）"><a href="#方案四：关闭-Docker-的-iptables-管理（不推荐）" class="headerlink" title="方案四：关闭 Docker 的 iptables 管理（不推荐）"></a>方案四：关闭 Docker 的 iptables 管理（不推荐）</h3><p>网上流传最广但坑最深的一个方案：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>  <span class="hljs-attr">&quot;iptables&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-literal"><span class="hljs-keyword">false</span></span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<p>改完 <code>sudo systemctl restart docker</code>，UFW 确实能管住端口了——但代价是：</p>
+<table>
+<thead>
+<tr>
+<th>后果</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>容器<strong>出不了网</strong></td>
+<td>Docker 不再写 <code>POSTROUTING</code> 的 <code>MASQUERADE</code> 规则，容器发的包没有源地址转换，直接回不来</td>
+</tr>
+<tr>
+<td>容器间<strong>跨网段不通</strong></td>
+<td><code>DOCKER-ISOLATION-STAGE-*</code> 链不再创建，自定义 bridge 网络之间的隔离和转发全乱</td>
+</tr>
+<tr>
+<td>端口发布变成用户态代理</td>
+<td>端口实际由 <code>docker-proxy</code> 用户态进程转发，性能下降、连接数受限于进程模型</td>
+</tr>
+<tr>
+<td>要手写全套 NAT</td>
+<td>每次新建容器网络都得自己补 <code>MASQUERADE</code> 和 DNAT</td>
+</tr>
+</tbody></table>
+<p>真要用就得自己把整套 NAT 补齐：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> iptables -t nat -A POSTROUTING -s 172.17.0.0/16 -j MASQUERADE<br></code></pre></td></tr></table></figure>
+
+<p><strong>结论</strong>：这是”用大炮打蚊子”，只有在完全自管 iptables 的场景才考虑。生产环境优先方案一或方案二。</p>
 <hr>
 <h2 id="常见坑排查清单"><a href="#常见坑排查清单" class="headerlink" title="常见坑排查清单"></a>常见坑排查清单</h2><table>
 <thead>
@@ -355,8 +444,18 @@
 </thead>
 <tbody><tr>
 <td>防火墙关了端口还能访问</td>
-<td>Docker 绑定了 iptables</td>
-<td><code>iptables -t nat -L -n</code></td>
+<td>Docker 在 <code>nat/DOCKER</code> 写了 DNAT、在 <code>filter/DOCKER</code> 写了 ACCEPT</td>
+<td><code>iptables -t nat -L DOCKER -n</code><br><code>iptables -L DOCKER -n</code></td>
+</tr>
+<tr>
+<td>UFW 状态显示正常但不生效</td>
+<td>流量走 FORWARD 链，没经过 UFW 挂的 INPUT 链</td>
+<td><code>iptables -L FORWARD -n --line-numbers</code></td>
+</tr>
+<tr>
+<td><code>DOCKER-USER</code> 里加的规则不生效</td>
+<td>规则加到了链末尾的 <code>-j RETURN</code> 之后</td>
+<td><code>iptables -L DOCKER-USER -n --line-numbers</code></td>
 </tr>
 <tr>
 <td>容器无法访问外网</td>
@@ -365,22 +464,26 @@
 </tr>
 <tr>
 <td>容器间无法通信</td>
-<td>网络模式或 FORWARD 链问题</td>
-<td><code>docker network ls</code></td>
+<td>网络模式或 <code>DOCKER-ISOLATION</code> 链问题</td>
+<td><code>docker network ls</code><br><code>iptables -L DOCKER-ISOLATION-STAGE-1 -n</code></td>
 </tr>
 <tr>
-<td>UFW 状态显示正常但不生效</td>
-<td>Docker 规则优先级更高</td>
-<td><code>iptables -L DOCKER-USER -n</code></td>
+<td>重启后规则失效</td>
+<td>手工规则未持久化</td>
+<td><code>sudo netfilter-persistent save</code></td>
+</tr>
+<tr>
+<td>端口发布只在本机能连</td>
+<td>正常现象，说明绑定了 <code>127.0.0.1</code></td>
+<td><code>docker port &lt;容器名&gt;</code></td>
 </tr>
 </tbody></table>
 <hr>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Docker 默认的 iptables 管理机制虽然方便，但会绕过系统防火墙，带来安全隐患。生产环境建议：</p>
 <ol>
-<li><strong>敏感服务不要直接映射到公网</strong>，使用 <code>127.0.0.1</code> 绑定</li>
-<li><strong>配置 <code>iptables: false</code></strong> 或使用 ufw-docker 插件</li>
-<li><strong>定期检查 iptables 规则</strong>：<code>iptables -L -n</code> 和 <code>iptables -t nat -L -n</code></li>
-<li><strong>数据库等关键服务设置强密码</strong>，并限制访问 IP</li>
+<li><strong>敏感服务不要直接映射到公网</strong>，端口绑定写成 <code>127.0.0.1:宿主机端口:容器端口</code>，对外访问走反向代理</li>
+<li><strong>需要放行公网时，用 <code>DOCKER-USER</code> 链做源 IP 白名单</strong>，并做好规则持久化</li>
+<li><strong><code>iptables: false</code> 是最后手段</strong>，会破坏容器网络，非必要不用</li>
 </ol>
 <p>安全无小事，别等被黑了才想起来补救。</p>
 
@@ -423,6 +526,8 @@
         <a href="/tags/%E8%BF%90%E7%BB%B4/" class="print-no-link">#运维</a>
       
         <a href="/tags/iptables/" class="print-no-link">#iptables</a>
+      
+        <a href="/tags/UFW/" class="print-no-link">#UFW</a>
       
     </div>
   
