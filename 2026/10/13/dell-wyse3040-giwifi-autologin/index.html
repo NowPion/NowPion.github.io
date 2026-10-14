@@ -31,8 +31,9 @@
 <meta property="og:image" content="https://pub-7843c36ae8c74acbb64998494a352f61.r2.dev/picgo/20261013170634824.jpg">
 <meta property="og:image" content="https://pub-7843c36ae8c74acbb64998494a352f61.r2.dev/picgo/20261013170628937.jpg">
 <meta property="og:image" content="https://pub-7843c36ae8c74acbb64998494a352f61.r2.dev/picgo/20261013170622466.png">
+<meta property="og:image" content="https://pub-7843c36ae8c74acbb64998494a352f61.r2.dev/picgo/20261014114330811.png">
 <meta property="article:published_time" content="2026-10-13T08:35:00.000Z">
-<meta property="article:modified_time" content="2026-10-13T09:21:09.306Z">
+<meta property="article:modified_time" content="2026-10-14T03:44:48.336Z">
 <meta property="article:author" content="Niezidong">
 <meta property="article:tag" content="软路由">
 <meta property="article:tag" content="iStoreOS">
@@ -106,7 +107,7 @@
 
   
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"BlogPosting","headline":"宿舍网络自由：Dell Wyse 3040 软路由实战 GiWiFi 校园网逆向与自动保活","description":"记录使用百元单网口小主机 Dell Wyse 3040 刷入 iStoreOS UEFI 固件，逆向分析高校 GiWiFi (gportal) 校园网 AES-128-CBC 认证协议，并实现全宿舍多设备防检测共享与断网秒级自动重连的完整实战。","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.newpon.top/2026/10/13/dell-wyse3040-giwifi-autologin/"},"datePublished":"2026-10-13T16:35:00+08:00","dateModified":"2026-10-13T17:21:09+08:00","author":{"@type":"Person","name":"Niezidong"},"publisher":{"@type":"Person","name":"Niezidong"}}
+  {"@context":"https://schema.org","@type":"BlogPosting","headline":"宿舍网络自由：Dell Wyse 3040 软路由实战 GiWiFi 校园网逆向与自动保活","description":"记录使用百元单网口小主机 Dell Wyse 3040 刷入 iStoreOS UEFI 固件，逆向分析高校 GiWiFi (gportal) 校园网 AES-128-CBC 认证协议，并实现全宿舍多设备防检测共享与断网秒级自动重连的完整实战。","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.newpon.top/2026/10/13/dell-wyse3040-giwifi-autologin/"},"datePublished":"2026-10-13T16:35:00+08:00","dateModified":"2026-10-14T11:44:48+08:00","author":{"@type":"Person","name":"Niezidong"},"publisher":{"@type":"Person","name":"Niezidong"}}
   </script>
   
 
@@ -266,7 +267,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          4.4k 字
+          4.2k 字
         
       </span>
     
@@ -277,7 +278,7 @@
         
         
         
-          37 分钟
+          35 分钟
         
       </span>
     
@@ -343,42 +344,7 @@
 <h4 id="物理接线与双向网络拓扑"><a href="#物理接线与双向网络拓扑" class="headerlink" title="物理接线与双向网络拓扑"></a>物理接线与双向网络拓扑</h4><h5 id="1-硬件线路图"><a href="#1-硬件线路图" class="headerlink" title="1. 硬件线路图"></a>1. 硬件线路图</h5><img src="https://pub-7843c36ae8c74acbb64998494a352f61.r2.dev/picgo/20261013170622466.png" srcset="/img/loading.gif" lazyload width="80%" />
 
 
-<h5 id="2-逻辑双向流量走向图-Mermaid-架构"><a href="#2-逻辑双向流量走向图-Mermaid-架构" class="headerlink" title="2. 逻辑双向流量走向图 (Mermaid 架构)"></a>2. 逻辑双向流量走向图 (Mermaid 架构)</h5><pre><code class=" mermaid">graph TD
-    subgraph 校园网服务端
-        Gateway[校园网 AC/BRAS 网关]
-        PortalServer[GiWiFi 认证服务器 172.31.0.50]
-        Internet((互联网 Internet))
-    end
-
-    subgraph 宿舍普通无线路由器
-        RouterWAN[WAN 口 172.20.x.x]
-        RouterLAN[LAN 口 192.168.1.1]
-        WifiAP[宿舍 Wi-Fi / AP 发射]
-    end
-
-    subgraph Dell Wyse 3040 旁路由
-        Wyse[Dell Wyse 3040 192.168.1.254]
-        Watchdog[认证看门狗 gwifi_login.py]
-        Defense[防检测核心: TTL=64 + NAT Masquerade]
-    end
-
-    subgraph 宿舍终端设备
-        Clients[手机 / iPad / 笔记本 / 台式机]
-    end
-
-    %% 日常上网流向 (蓝色链路)
-    Clients --&gt;|1. 默认网关指向 1.254| Wyse
-    Wyse --&gt;|2. 抹除特征 + 锁定 TTL=64| Defense
-    Defense --&gt;|3. 转发至路由器 LAN| RouterLAN
-    RouterLAN --&gt;|4. 出口路由| RouterWAN
-    RouterWAN --&gt;|5. 正常外网流量| Gateway --&gt; Internet
-
-    %% 认证保活流向 (橙色链路)
-    Watchdog -.-&gt;|嗅探外网 ping 223.5.5.5 失败| Watchdog
-    Watchdog -.-&gt;|自动触发 AES 加密登录| RouterLAN
-    RouterLAN -.-&gt; RouterWAN -.-&gt;|POST /loginAction 认证 WAN IP| PortalServer
-    PortalServer -.-&gt;|放行通过| Gateway
-</code></pre>
+<h5 id="2-逻辑双向流量走向图"><a href="#2-逻辑双向流量走向图" class="headerlink" title="2. 逻辑双向流量走向图"></a>2. 逻辑双向流量走向图</h5><img src="https://pub-7843c36ae8c74acbb64998494a352f61.r2.dev/picgo/20261014114330811.png" srcset="/img/loading.gif" lazyload width="80%" />
 
 <h5 id="3-为什么这个拓扑最稳定？（双轨分离机制）"><a href="#3-为什么这个拓扑最稳定？（双轨分离机制）" class="headerlink" title="3. 为什么这个拓扑最稳定？（双轨分离机制）"></a>3. 为什么这个拓扑最稳定？（双轨分离机制）</h5><ul>
 <li><strong>控制面（认证保活）</strong>：Wyse 3040 独立在后台与 <code>172.31.0.50</code> 对话，负责把路由器的 WAN 口 IP 变成“已认证白名单”；</li>
