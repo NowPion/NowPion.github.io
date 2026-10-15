@@ -1,0 +1,798 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+    <link rel="canonical" href="https://blog.newpon.top/2026/10/15/反代workbuddy/"/>
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Niezidong">
+  <meta name="keywords" content="Niezidong,Java,Spring Boot,分布式,微服务,架构设计,Netty,Redis,技术博客">
+  
+    <meta name="description" content="使用开源工具 Kiro-Go 反代 Kiro，暴露 OpenAI 与 Anthropic 兼容接口，支持多账号池轮询、SSE 流式响应及 Docker 快速容器化部署。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="反代 Kiro：使用 Kiro-Go 暴露 OpenAI &#x2F; Anthropic 兼容接口">
+<meta property="og:url" content="https://blog.newpon.top/2026/10/15/%E5%8F%8D%E4%BB%A3workbuddy/index.html">
+<meta property="og:site_name" content="Niezidong">
+<meta property="og:description" content="使用开源工具 Kiro-Go 反代 Kiro，暴露 OpenAI 与 Anthropic 兼容接口，支持多账号池轮询、SSE 流式响应及 Docker 快速容器化部署。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pub-7843c36ae8c74acbb64998494a352f61.r2.dev/picgo/20260522174737095.png">
+<meta property="og:image" content="https://pub-7843c36ae8c74acbb64998494a352f61.r2.dev/picgo/20260522175051450.png">
+<meta property="article:published_time" content="2026-10-15T02:14:34.000Z">
+<meta property="article:modified_time" content="2026-10-15T15:54:58.434Z">
+<meta property="article:author" content="Niezidong">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="Kiro">
+<meta property="article:tag" content="Kiro-Go">
+<meta property="article:tag" content="Claude Code">
+<meta property="article:tag" content="CC Switch">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://pub-7843c36ae8c74acbb64998494a352f61.r2.dev/picgo/20260522174737095.png">
+  
+  
+  
+    <meta name="google-site-verification" content="N6JBgzH9rNGetuGGxkXkXt_gjaEFrHZIuOPfWQck1EI" />
+
+  
+  <title>反代 Kiro：使用 Kiro-Go 暴露 OpenAI / Anthropic 兼容接口 - Niezidong</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+  
+<link rel="stylesheet" href="/css/custom.css">
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"blog.newpon.top","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":true,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"BlogPosting","headline":"反代 Kiro：使用 Kiro-Go 暴露 OpenAI / Anthropic 兼容接口","description":"使用开源工具 Kiro-Go 反代 Kiro，暴露 OpenAI 与 Anthropic 兼容接口，支持多账号池轮询、SSE 流式响应及 Docker 快速容器化部署。","mainEntityOfPage":{"@type":"WebPage","@id":"https://blog.newpon.top/2026/10/15/%E5%8F%8D%E4%BB%A3workbuddy/"},"datePublished":"2026-10-15T10:14:34+08:00","dateModified":"2026-10-15T23:54:58+08:00","author":{"@type":"Person","name":"Niezidong"},"publisher":{"@type":"Person","name":"Niezidong"}}
+  </script>
+  
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>NieBlong</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>友链</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="反代 Kiro：使用 Kiro-Go 暴露 OpenAI / Anthropic 兼容接口"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-author" aria-hidden="true"></i>
+        Niezidong
+      </span>
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2026-10-15 10:14" pubdate>
+          2026年10月15日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          709 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          6 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">反代 Kiro：使用 Kiro-Go 暴露 OpenAI / Anthropic 兼容接口</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>Kiro 的这个ui是真几把难用，而且还很卡，就想着把Kiro的模型反代出来</p>
+<p>这里使用的是 <strong>Kiro-Go</strong>：</p>
+<p>GitHub 地址：<a target="_blank" rel="noopener" href="https://github.com/Quorinex/Kiro-Go">https://github.com/Quorinex/Kiro-Go</a></p>
+<p>Kiro-Go 的核心能力：</p>
+<ul>
+<li>支持 OpenAI <code>/v1/chat/completions</code> 接口</li>
+<li>支持 Anthropic <code>/v1/messages</code> 接口</li>
+<li>支持多账号池与轮询负载均衡</li>
+<li>支持 SSE 流式响应</li>
+<li>支持自动刷新 Token</li>
+<li>提供 Web 管理后台</li>
+<li>支持配置 HTTP &#x2F; SOCKS5 出站代理</li>
+</ul>
+<h2 id="使用-Docker-启动-Kiro-Go"><a href="#使用-Docker-启动-Kiro-Go" class="headerlink" title="使用 Docker 启动 Kiro-Go"></a>使用 Docker 启动 Kiro-Go</h2><p>先准备一个本地数据目录，用来持久化配置和账号数据：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">mkdir</span> -p /opt/kiro-go/data<br></code></pre></td></tr></table></figure>
+
+<p>然后启动容器：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker run -d \<br>  --name kiro-go \<br>  -p 8080:8080 \<br>  -e ADMIN_PASSWORD=your_secure_password \<br>  -v /opt/kiro-go/data:/app/data \<br>  --restart unless-stopped \<br>  ghcr.io/quorinex/kiro-go:latest<br></code></pre></td></tr></table></figure>
+
+<p>参数说明：</p>
+<ul>
+<li><code>-p 8080:8080</code>：将管理后台和 API 服务暴露到本机 <code>8080</code> 端口</li>
+<li><code>ADMIN_PASSWORD</code>：管理后台登录密码，建议改成复杂密码</li>
+<li><code>/opt/kiro-go/data:/app/data</code>：持久化配置文件和账号数据</li>
+<li><code>--restart unless-stopped</code>：服务异常退出或机器重启后自动拉起</li>
+</ul>
+<p>如果你想映射到其他端口，比如宿主机 <code>8912</code>，可以这样写：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">-p 8912:8080<br></code></pre></td></tr></table></figure>
+
+<p>此时管理后台地址就是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">http://localhost:8912/admin<br></code></pre></td></tr></table></figure>
+
+<h2 id="访问管理后台"><a href="#访问管理后台" class="headerlink" title="访问管理后台"></a>访问管理后台</h2><p>如果使用上面的默认端口映射，启动成功后访问：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">http://localhost:8080/admin<br></code></pre></td></tr></table></figure>
+
+<p>使用 <code>ADMIN_PASSWORD</code> 配置的密码登录后台。</p>
+<p><img src="https://pub-7843c36ae8c74acbb64998494a352f61.r2.dev/picgo/20260522174737095.png" srcset="/img/loading.gif" lazyload alt="控制台"></p>
+<p>进入后台后，先添加 Kiro 账号。账号配置完成后，可以在后台生成 API Key，后面配置到 CC Switch 或其他工具时会用到。</p>
+<h2 id="在-CC-Switch-中配置"><a href="#在-CC-Switch-中配置" class="headerlink" title="在 CC Switch 中配置"></a>在 CC Switch 中配置</h2><p>打开 CC Switch，新建一个 API 配置。</p>
+<p>如果按默认端口启动，基础地址可以填：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">http://localhost:8080<br></code></pre></td></tr></table></figure>
+
+<p>如果你映射的是 <code>8912</code> 端口，则填写：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs text">http://localhost:8912<br></code></pre></td></tr></table></figure>
+
+<p>API Key 填写刚刚在 Kiro-Go 后台生成的 Key。</p>
+<p><img src="https://pub-7843c36ae8c74acbb64998494a352f61.r2.dev/picgo/20260522175051450.png" srcset="/img/loading.gif" lazyload alt="配置"></p>
+<p>配置完成后，点击获取模型列表。只要模型列表能正常拉取，说明 Kiro-Go、账号池和 CC Switch 的连接基本没问题。</p>
+<p>接下来就可以把这个配置切换到 Claude Code、Codex 或其他兼容 OpenAI &#x2F; Anthropic 接口的工具里使用。</p>
+<h2 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h2><h3 id="1-管理后台打不开"><a href="#1-管理后台打不开" class="headerlink" title="1. 管理后台打不开"></a>1. 管理后台打不开</h3><p>先确认容器是否正常运行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker ps | grep kiro-go<br></code></pre></td></tr></table></figure>
+
+<p>再查看日志：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker logs -f kiro-go<br></code></pre></td></tr></table></figure>
+
+<p>如果你修改过端口映射，要注意访问的是宿主机端口。例如 <code>-p 8912:8080</code> 对应的是 <code>http://localhost:8912/admin</code>，不是 <code>http://localhost:8080/admin</code>。</p>
+<h3 id="2-模型列表获取失败"><a href="#2-模型列表获取失败" class="headerlink" title="2. 模型列表获取失败"></a>2. 模型列表获取失败</h3><p>优先检查这几项：</p>
+<ul>
+<li>Kiro-Go 后台账号是否添加成功</li>
+<li>API Key 是否复制完整</li>
+<li>CC Switch 里的基础地址是否填写到端口，不要多写 <code>/admin</code></li>
+<li>网络环境是否需要在 Kiro-Go 后台配置出站代理</li>
+</ul>
+<h3 id="3-不建议直接裸奔到公网"><a href="#3-不建议直接裸奔到公网" class="headerlink" title="3. 不建议直接裸奔到公网"></a>3. 不建议直接裸奔到公网</h3><p>如果要部署到服务器并开放给外部使用，至少要做好这些事情：</p>
+<ul>
+<li>修改默认后台密码</li>
+<li>不要泄露 API Key</li>
+<li>使用 Nginx &#x2F; Caddy 配置 HTTPS</li>
+<li>给管理后台加访问限制</li>
+<li>定期备份 <code>/app/data</code> 目录</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/" class="category-chain-item">技术分享</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Docker/" class="print-no-link">#Docker</a>
+      
+        <a href="/tags/Kiro/" class="print-no-link">#Kiro</a>
+      
+        <a href="/tags/Kiro-Go/" class="print-no-link">#Kiro-Go</a>
+      
+        <a href="/tags/Claude-Code/" class="print-no-link">#Claude Code</a>
+      
+        <a href="/tags/CC-Switch/" class="print-no-link">#CC Switch</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>反代 Kiro：使用 Kiro-Go 暴露 OpenAI / Anthropic 兼容接口</div>
+      <div>https://blog.newpon.top/2026/10/15/反代workbuddy/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Niezidong</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2026年10月15日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2026/10/13/dell-wyse3040-giwifi-autologin/" title="宿舍网络自由：Dell Wyse 3040 软路由实战 GiWiFi 校园网逆向与自动保活">
+                        <span class="hidden-mobile">宿舍网络自由：Dell Wyse 3040 软路由实战 GiWiFi 校园网逆向与自动保活</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'NowPion/NowPion.github.io');
+      s.setAttribute('issue-term', 'title');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+  
+<script src="/js/custom.js"></script>
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
