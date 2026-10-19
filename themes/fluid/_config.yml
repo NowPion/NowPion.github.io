@@ -1,4 +1,4 @@
-#---------------------------
+﻿#---------------------------
 # Hexo Theme Fluid
 # Author: Fluid-dev
 # Github: https://github.com/fluid-dev/hexo-theme-fluid
@@ -243,6 +243,8 @@ custom_css: /css/custom.css
 # Custom HTML code to be added to the <head> section
 custom_head: |
   <meta name="google-site-verification" content="N6JBgzH9rNGetuGGxkXkXt_gjaEFrHZIuOPfWQck1EI" />
+  <link rel="alternate" type="application/atom+xml" title="Niezidong" href="/atom.xml" />
+  <link rel="alternate" type="application/rss+xml" title="Niezidong" href="/rss2.xml" />
 
 # 网页访问统计
 # Analysis of website visitors
@@ -378,6 +380,7 @@ navbar:
     - { key: "tag", link: "/tags/", icon: "iconfont icon-tags-fill" }
     - { key: "about", link: "/about/", icon: "iconfont icon-user-fill" }
     - { key: "links", link: "/links/", icon: "iconfont icon-link-fill" }
+    - { key: "rss", name: "RSS", link: "/atom.xml", icon: "iconfont icon-rss", target: "_blank" }
 
 # 搜索功能，基于 hexo-generator-search 插件，若已安装其他搜索插件请关闭此功能，以避免生成多余的索引文件
 # Search feature, based on hexo-generator-search. If you have installed other search plugins, please disable this feature to avoid generating redundant index files
@@ -487,7 +490,7 @@ footer:
 index:
   # 首页 Banner 头图，可以是相对路径或绝对路径，以下相同
   # Path of Banner image, can be a relative path or an absolute path, the same on other pages
-  banner_img: /img/default.png
+  banner_img: /img/yuhany.jpg
 
   # 头图高度，屏幕百分比
   # Height ratio of banner image
@@ -560,7 +563,7 @@ index:
 #---------------------------
  
 post:
-  banner_img: /img/default.png
+  banner_img: /img/yuhany.jpg
   banner_img_height: 70
   banner_mask_alpha: 0.3
 
@@ -574,7 +577,7 @@ post:
     # 作者，优先根据 front-matter 里 author 字段，其次是 hexo 配置中 author 值
     # Author, based on `author` field in front-matter, if not set, based on `author` value in hexo config
     author:
-      enable: false
+      enable: true
 
     # 文章日期，优先根据 front-matter 里 date 字段，其次是 md 文件日期
     # Post date, based on `date` field in front-matter, if not set, based on create date of .md file
@@ -927,7 +930,7 @@ discuss:
 # Archive Page
 #---------------------------
 archive:
-  banner_img: /img/default.png
+  banner_img: /img/yuhany.jpg
   banner_img_height: 60
   banner_mask_alpha: 0.3
 
@@ -938,7 +941,7 @@ archive:
 #---------------------------
 category:
   enable: true
-  banner_img: /img/default.png
+  banner_img: /img/yuhany.jpg
   banner_img_height: 60
   banner_mask_alpha: 0.3
 
@@ -967,7 +970,7 @@ category:
 #---------------------------
 tag:
   enable: true
-  banner_img: /img/default.png
+  banner_img: /img/yuhany.jpg
   banner_img_height: 80
   banner_mask_alpha: 0.3
   tagcloud:
@@ -984,12 +987,12 @@ tag:
 #---------------------------
 about:
   enable: true
-  banner_img: /img/default.png
+  banner_img: /img/yuhany.jpg
   banner_img_height: 60
   banner_mask_alpha: 0.3
   avatar: /img/avatar.png
   name: "nieDong"
-  intro: "济南某高校一名大四学生，努力学习中..."
+  intro: "济南某高校一名菜鸡学生，努力学习中..."
   # 更多图标可从 https://hexo.fluid-dev.com/docs/icon/ 查找，`class` 代表图标的 css class，添加 `qrcode` 后，图标不再是链接而是悬浮二维码
   # More icons can be found from https://hexo.fluid-dev.com/docs/en/icon/  `class` is the css class of the icon. If adding `qrcode`, the icon is no longer a link, but a hovering QR code
   icons:
@@ -1005,7 +1008,7 @@ about:
 # Custom Page through `hexo new page`
 #---------------------------
 page:
-  banner_img: /img/default.png
+  banner_img: /img/yuhany.jpg
   banner_img_height: 60
   banner_mask_alpha: 0.3
 
@@ -1016,7 +1019,7 @@ page:
 #---------------------------
 page404:
   enable: true
-  banner_img: /img/default.png
+  banner_img: /img/yuhany.jpg
   banner_img_height: 85
   banner_mask_alpha: 0.3
   # 重定向到首页的延迟(毫秒)
@@ -1030,18 +1033,12 @@ page404:
 #---------------------------
 links:
   enable: true
-  banner_img: /img/default.png
+  banner_img: /img/yuhany.jpg
   banner_img_height: 60
   banner_mask_alpha: 0.3
   # 友链的成员项
   # Member item of page
   items:
-    - {
-      title: "LINUX DO",
-      intro: "新的理想型社区",
-      link: "https://linux.do/",
-      avatar: "/img/linuxdo.png"
-    }
     - {
       title: "UpXuu's blog",
       intro: "逐光而上",

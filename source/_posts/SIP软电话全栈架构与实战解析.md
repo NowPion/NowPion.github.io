@@ -26,6 +26,11 @@ description: 从第一性原理深入剖析 SIP 软电话全栈系统架构，�
 - **请求/响应模型**：客户端发送请求方法（Method），服务端返回三位数字的状态码（Status Code）；
 - **URI 寻址机制**：类似 `sip:1001@fs.local` 或 `sip:alice@example.com`，像邮箱与网页地址一样支持域名与分机路由。
 
+<div style="display:flex;gap:24px;justify-content:center;margin:20px 0">
+  <img src="https://pub-7843c36ae8c74acbb64998494a352f61.r2.dev/picgo/20260830142104832.png" width="260" alt="通话界面" />
+  <img src="https://pub-7843c36ae8c74acbb64998494a352f61.r2.dev/picgo/20260830143737870.png" width="260" alt="账号管理" />
+</div>
+
 ### 1.1 核心请求方法（Methods）
 
 | 方法 | 含义 | 类比 / 场景 |

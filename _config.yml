@@ -5,11 +5,12 @@
 # Site
 title: Niezidong
 subtitle: '技术探索与实践'
-description: 'Niezidong的技术博客，记录与分享Java、Spring Boot、分布式系统、微服务、高并发架构设计及前端开发实践与思考。'
+description: 'Niezidong的技术博客，记录与分享技术开发实践与思考。'
 keywords: 'Niezidong,Java,Spring Boot,分布式,微服务,架构设计,Netty,Redis,技术博客'
 author: Niezidong
 language: zh-CN
 timezone: 'Asia/Shanghai'
+
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
@@ -115,3 +116,20 @@ sitemap:
 
 baidusitemap:
   path: baidusitemap.xml
+
+# Feed (RSS / Atom 订阅)
+feed:
+  enable: true
+  type:
+    - atom
+    - rss2
+  path:
+    - atom.xml
+    - rss2.xml
+  limit: 20
+  hub:
+  content: true
+  content_limit:
+  content_limit_delim: ' '
+  order_by: -date
+  autodiscovery: true

@@ -251,3 +251,23 @@ footer {
     transform: none;
   }
 }
+
+/* --------------------------------------------------------------------------
+   10. 隐藏全局滚动条（保留正常滚动，隐藏视觉滚动条）
+   -------------------------------------------------------------------------- */
+html,
+body {
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE 10+ / Edge */
+}
+
+/* WebKit / Blink 内核 (Chrome, Edge, Safari, Opera 等) */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+
